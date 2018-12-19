@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "UFileSDK"
-  s.version      = "3.0.1"
+  s.version      = "3.0.2"
   s.summary      = "UCloud Object Storage SDK for iOS"
 
   # This description is used to generate tags and improve search results.
@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
                     "UCloud Object Storage SDK for iOS,you can use it for file operations and bucket management."
                    DESC
 
-  s.homepage     = "https://github.com/ufilesdk-dev/ufile-ios-sdk"
+  s.homepage     = "https://github.com/ucloud/ufile-sdk-ios"
   # s.screenshots  = "www.example.com/screenshots_1.gif", "www.example.com/screenshots_2.gif"
 
 
@@ -80,7 +80,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/ufilesdk-dev/ufile-ios-sdk.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/ucloud/ufile-sdk-ios.git", :tag => "#{s.version}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
