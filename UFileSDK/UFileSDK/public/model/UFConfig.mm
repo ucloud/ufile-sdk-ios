@@ -8,6 +8,8 @@
 
 #import "UFConfig.h"
 #import "UFTools.h"
+#include "UFileSDKConst.h"
+#include "log4cplus_ufile.h"
 
 @implementation UFConfig
 - (instancetype)initConfigWithPrivateToken:(NSString *)privateToken
@@ -61,15 +63,15 @@
     return [NSString stringWithFormat:@"privateToken:%@ , publicToken:%@ , bucket:%@ , fileOperateEncryptServer:%@ , fileAddressEncryptServer:%@ , proxySuffix:%@ , baseURL:%@",self.privateToken,self.publicToken,self.bucket,self.fileOperateEncryptServer,self.fileAddressEncryptServer,self.proxySuffix,self.baseURL];
 }
 
-- (NSString *)signatureForFileOperationWithHttpMethod:(NSString *)httpMethod key:(NSString *)keyName md5Data:(NSString * __nullable)contentMd5 contentType:(NSString *)contentType  callBack:(NSDictionary * __nullable)policy
+- (id)signatureForFileOperationWithHttpMethod:(NSString *)httpMethod key:(NSString *)keyName md5Data:(NSString * __nullable)contentMd5 contentType:(NSString *)contentType  callBack:(NSDictionary * __nullable)policy
 {
-    if (_fileOperateEncryptServer) {
-        return [self serverSignatureWithHttpMethod:httpMethod key:keyName md5Data:contentMd5 contentType:contentType callBack:policy];
+    if (self.fileOperateEncryptServer == nil || [UFTools uf_isEmpty:self.fileOperateEncryptServer]) {
+        return [self localSignatureWithHttpMethod:httpMethod key:keyName md5Data:contentMd5 contentType:contentType callBack:policy];
     }
-    return [self localSignatureWithHttpMethod:httpMethod key:keyName md5Data:contentMd5 contentType:contentType callBack:policy];
+    return [self serverSignatureWithHttpMethod:httpMethod key:keyName md5Data:contentMd5 contentType:contentType callBack:policy];
 }
 
-- (NSString *)doSyncHttpRequestGetSignature:(NSMutableURLRequest *)request params:(NSDictionary *)paramsDict
+- (id)doSyncHttpRequestGetSignature:(NSMutableURLRequest *)request params:(NSDictionary *)paramsDict
 {
     NSString * paramJson = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:paramsDict options:0 error:nil] encoding:NSUTF8StringEncoding];
     request.HTTPMethod = @"POST";
@@ -93,10 +95,12 @@
     if (strRes) {
         return strRes;
     }
-    return nil;
+    log4cplus_warn("UFileSDK", "server signature, signature result is nil..\n");
+    UFError *ufError  = [UFError sysErrorWithInvalidArgument:@"server signature, signature is nil"];
+    return ufError;
 }
 
-- (NSString *)serverSignatureWithHttpMethod:(NSString *)httpMethod key:(NSString *)keyName md5Data:(NSString * __nullable)contentMd5
+- (id)serverSignatureWithHttpMethod:(NSString *)httpMethod key:(NSString *)keyName md5Data:(NSString * __nullable)contentMd5
                                 contentType:(NSString *)contentType
                                    callBack:(NSDictionary * __nullable)policy
 {
@@ -134,12 +138,14 @@
     return [self doSyncHttpRequestGetSignature:request params:mutaDict];
 }
 
-- (NSString *)localSignatureWithHttpMethod:(NSString *)httpMethod key:(NSString *)keyName md5Data:(NSString * __nullable)contentMd5 contentType:(NSString *)contentType
+- (id)localSignatureWithHttpMethod:(NSString *)httpMethod key:(NSString *)keyName md5Data:(NSString * __nullable)contentMd5 contentType:(NSString *)contentType
                                   callBack:(NSDictionary * __nullable)policy
 {
     
     if (self.privateToken == nil || [UFTools uf_isEmpty:self.privateToken]) {
-        return nil;
+        log4cplus_warn("UFileSDK", "local signature,private token is nil..\n");
+        UFError *ufError  = [UFError sysErrorWithInvalidArgument:@"local signature,private token is nil"];
+        return ufError;
     }
     NSString *key  = [keyName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSMutableString *sigStr  = [NSMutableString stringWithFormat:@"%@\n",httpMethod];
@@ -169,7 +175,7 @@
     return [data base64EncodedStringWithOptions:0];
 }
 
-- (NSString *)serverSignatureForGetFileUrlWithHttpMethod:(NSString *)httpMethod key:(NSString *)keyName md5Data:(NSString * __nullable)contentMd5 contentType:(NSString *)contentType expiresTime:(NSString *)expiresTime
+- (id)serverSignatureForGetFileUrlWithHttpMethod:(NSString *)httpMethod key:(NSString *)keyName md5Data:(NSString * __nullable)contentMd5 contentType:(NSString *)contentType expiresTime:(NSString *)expiresTime
 {
     NSMutableDictionary *mutaDict = [NSMutableDictionary dictionary];
     if (self.bucket) {
@@ -189,10 +195,12 @@
     return [self doSyncHttpRequestGetSignature:request params:mutaDict];
 }
 
-- (NSString *)localSignatureForGetFileUrlWithHttpMethod:(NSString *)httpMethod key:(NSString *)keyName md5Data:(NSString * __nullable)contentMd5 contentType:(NSString *)contentType expiresTime:(NSString *)expiresTime
+- (id)localSignatureForGetFileUrlWithHttpMethod:(NSString *)httpMethod key:(NSString *)keyName md5Data:(NSString * __nullable)contentMd5 contentType:(NSString *)contentType expiresTime:(NSString *)expiresTime
 {
     if (self.privateToken == nil || [UFTools uf_isEmpty:self.privateToken]) {
-        return nil;
+        log4cplus_warn("UFileSDK", "local signature, private token is nil..\n");
+        UFError *ufError = [UFError sysErrorWithInvalidArgument:@"local signature, private token is nil"];
+        return ufError;
     }
     NSString *key  = [keyName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSMutableString *sigStr  = [NSMutableString stringWithFormat:@"%@\n",httpMethod];
@@ -204,12 +212,12 @@
     return HmacSHA1str;
 }
 
-- (NSString *)signatureForGetFileUrlWithHttpMethod:(NSString *)httpMethod key:(NSString *)keyName md5Data:(NSString * __nullable)contentMd5 contentType:(NSString *)contentType expiresTime:(NSString *)expiresTime
+- (id)signatureForGetFileUrlWithHttpMethod:(NSString *)httpMethod key:(NSString *)keyName md5Data:(NSString * __nullable)contentMd5 contentType:(NSString *)contentType expiresTime:(NSString *)expiresTime
 {
-    if (_fileAddressEncryptServer) {
-        return [self serverSignatureForGetFileUrlWithHttpMethod:httpMethod key:keyName md5Data:contentMd5 contentType:contentType expiresTime:expiresTime];
+    if (self.fileAddressEncryptServer == nil || [UFTools uf_isEmpty:self.fileAddressEncryptServer]) {
+        return [self localSignatureForGetFileUrlWithHttpMethod:httpMethod key:keyName md5Data:contentMd5 contentType:contentType expiresTime:expiresTime];
     }
-    return [self localSignatureForGetFileUrlWithHttpMethod:httpMethod key:keyName md5Data:contentMd5 contentType:contentType expiresTime:expiresTime];
+    return [self serverSignatureForGetFileUrlWithHttpMethod:httpMethod key:keyName md5Data:contentMd5 contentType:contentType expiresTime:expiresTime];
 }
 
 @end

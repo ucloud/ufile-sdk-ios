@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "UFSDKHelper.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -88,7 +89,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param policy 签名服务
  @return 签名
  */
-- (NSString *)signatureForFileOperationWithHttpMethod:(NSString *)httpMethod key:(NSString *)keyName md5Data:(NSString * __nullable)contentMd5 contentType:(NSString *)contentType callBack:(NSDictionary * __nullable)policy;
+- (id)signatureForFileOperationWithHttpMethod:(NSString *)httpMethod key:(NSString *)keyName md5Data:(NSString * __nullable)contentMd5 contentType:(NSString *)contentType callBack:(NSDictionary * __nullable)policy;
 
 
 /**
@@ -101,7 +102,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param expiresTime 过期时间
  @return 签名
  */
-- (NSString *)signatureForGetFileUrlWithHttpMethod:(NSString *)httpMethod key:(NSString *)keyName md5Data:(NSString * __nullable)contentMd5 contentType:(NSString *)contentType expiresTime:(NSString *)expiresTime;
+- (id)signatureForGetFileUrlWithHttpMethod:(NSString *)httpMethod key:(NSString *)keyName md5Data:(NSString * __nullable)contentMd5 contentType:(NSString *)contentType expiresTime:(NSString *)expiresTime;
 @end
 
 NS_ASSUME_NONNULL_END

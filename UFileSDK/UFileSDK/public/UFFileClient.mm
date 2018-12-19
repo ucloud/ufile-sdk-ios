@@ -378,7 +378,12 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
     }
     mimeType = mime(mimeType);
     NSString *contentMD5  = [UFTools convertDataToMD5:data];
-    NSString *strAuth = [self.ufConfig signatureForFileOperationWithHttpMethod:@"PUT" key:keyName md5Data:contentMD5 contentType:mimeType callBack:nil];
+    id signature = [self.ufConfig signatureForFileOperationWithHttpMethod:@"PUT" key:keyName md5Data:contentMD5 contentType:mimeType callBack:nil];
+    if ([signature isKindOfClass:[UFError class]]) {
+        handler((UFError *)signature,nil);
+        return;
+    }
+    NSString *strAuth = (NSString *)signature;
     NSURL *url = [self fileUrl:keyName params:nil];
     UFMutableURLRequest *request = NULL;
     @try {
@@ -424,7 +429,12 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
     }
     int fileSize  = (int)contentData.length;
     mimeType = mime(mimeType);
-    NSString *strAuth = [self.ufConfig signatureForFileOperationWithHttpMethod:@"POST" key:keyName md5Data:@"" contentType:mimeType callBack:nil];
+    id signature = [self.ufConfig signatureForFileOperationWithHttpMethod:@"POST" key:keyName md5Data:@"" contentType:mimeType callBack:nil];
+    if ([signature isKindOfClass:[UFError class]]) {
+        handler((UFError *)signature,nil);
+        return;
+    }
+    NSString *strAuth = (NSString *)signature;
     NSString *etag = [UFTools calcEtagForData:contentData];
     NSURL *url = [self fileUrl:@"uploadhit" params:@{@"Hash":etag, @"FileName":keyName, @"FileSize":[@(fileSize) stringValue]}];
     UFMutableURLRequest *request = NULL;
@@ -459,7 +469,12 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
         return;
     }
     mimeType = mime(mimeType);
-    NSString *strAuth = [self.ufConfig signatureForFileOperationWithHttpMethod:@"POST" key:keyName md5Data:@"" contentType:mimeType callBack:nil];
+    id signature = [self.ufConfig signatureForFileOperationWithHttpMethod:@"POST" key:keyName md5Data:@"" contentType:mimeType callBack:nil];
+    if ([signature isKindOfClass:[UFError class]]) {
+        handler((UFError *)signature,nil);
+        return;
+    }
+    NSString *strAuth = (NSString *)signature;
     NSURL *url = [self fileUrl:keyName params:@{@"uploads": @""}];
     UFMutableURLRequest *request = NULL;
     try {
@@ -502,7 +517,12 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
         return;
     }
     mimeType = mime(mimeType);
-    NSString *strAuth = [self.ufConfig signatureForFileOperationWithHttpMethod:@"PUT" key:keyName md5Data:@"" contentType:mimeType callBack:nil];
+    id signature = [self.ufConfig signatureForFileOperationWithHttpMethod:@"PUT" key:keyName md5Data:@"" contentType:mimeType callBack:nil];
+    if ([signature isKindOfClass:[UFError class]]) {
+        handler((UFError *)signature,nil);
+        return;
+    }
+    NSString *strAuth = (NSString *)signature;
     NSURL *url = [self fileUrl:keyName params:@{@"uploadId":upId, @"partNumber":[@(partIndex) stringValue]}];
     UFMutableURLRequest *request = NULL;
     try {
@@ -539,7 +559,12 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
         return;
     }
     mimeType = mime(mimeType);
-    NSString *strAuth = [self.ufConfig signatureForFileOperationWithHttpMethod:@"DELETE" key:keyName md5Data:@"" contentType:mimeType callBack:nil];
+    id signature = [self.ufConfig signatureForFileOperationWithHttpMethod:@"DELETE" key:keyName md5Data:@"" contentType:mimeType callBack:nil];
+    if ([signature isKindOfClass:[UFError class]]) {
+        handler((UFError *)signature,nil);
+        return;
+    }
+    NSString *strAuth = (NSString *)signature;
     NSURL *url = [self fileUrl:keyName params:@{@"uploadId":upId}];
     UFMutableURLRequest *request = NULL;
     try {
@@ -581,7 +606,12 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
         return;
     }
     mimeType = mime(mimeType);
-    NSString *strAuth = [self.ufConfig signatureForFileOperationWithHttpMethod:@"POST" key:keyName md5Data:@"" contentType:mimeType callBack:nil];
+    id signature = [self.ufConfig signatureForFileOperationWithHttpMethod:@"POST" key:keyName md5Data:@"" contentType:mimeType callBack:nil];
+    if ([signature isKindOfClass:[UFError class]]) {
+        handler((UFError *)signature,nil);
+        return;
+    }
+    NSString *strAuth = (NSString *)signature;
     NSData *body = [[etags componentsJoinedByString:@","] dataUsingEncoding:NSUTF8StringEncoding];
     NSDictionary *paramDict = newKeyName == NULL ? @{@"uploadId":upId} : @{@"uploadId":upId, @"newKey":newKeyName};
     NSURL *url = [self fileUrl:keyName params:paramDict];
@@ -629,7 +659,12 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
     if (range.begin >= 0 && range.end >= 0 && range.end > range.begin) {
         option = @{kUFileSDKOptionRange:[NSString stringWithFormat:@"%ld-%ld",(long)range.begin,(long)range.end]};
     }
-    NSString *strAuth = [self.ufConfig signatureForFileOperationWithHttpMethod:@"GET" key:keyName md5Data:nil contentType:nil callBack:nil];
+    id signature = [self.ufConfig signatureForFileOperationWithHttpMethod:@"GET" key:keyName md5Data:nil contentType:nil callBack:nil];
+    if ([signature isKindOfClass:[UFError class]]) {
+        handler((UFError *)signature,nil);
+        return;
+    }
+    NSString *strAuth = (NSString *)signature;
     NSArray *headers  =[self constructHeadersForType:UFHttpResponseTypeDownload author:strAuth options:option length:0];
     headers = nil;  // 私有空间不需要构造headers
 //    NSURL *url = [self fileUrl:keyName params:nil];
@@ -675,7 +710,12 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
         option = @{kUFileSDKOptionRange:[NSString stringWithFormat:@"%ld-%ld",(long)range.begin,(long)range.end]};
     }
     
-    NSString *strAuth = [self.ufConfig signatureForFileOperationWithHttpMethod:@"GET" key:keyName md5Data:nil contentType:nil callBack:nil];
+    id signature = [self.ufConfig signatureForFileOperationWithHttpMethod:@"GET" key:keyName md5Data:nil contentType:nil callBack:nil];
+    if ([signature isKindOfClass:[UFError class]]) {
+        handler((UFError *)signature,nil);
+        return;
+    }
+    NSString *strAuth = (NSString *)signature;
     NSArray *headers  =[self constructHeadersForType:UFHttpResponseTypeDownload author:strAuth options:option length:0];
     headers = nil;
 //    NSURL *url = [self fileUrl:keyName params:nil];
@@ -709,7 +749,12 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
     if ([UFFileClient checkParametersAndNotify:keyName input:NULL isCheck:NO handler:handler]) {
         return;
     }
-    NSString *strAuth = [self.ufConfig signatureForFileOperationWithHttpMethod:@"DELETE" key:keyName md5Data:@"" contentType:@"" callBack:nil];
+    id signature = [self.ufConfig signatureForFileOperationWithHttpMethod:@"DELETE" key:keyName md5Data:@"" contentType:@"" callBack:nil];
+    if ([signature isKindOfClass:[UFError class]]) {
+        handler((UFError *)signature,nil);
+        return;
+    }
+    NSString *strAuth = (NSString *)signature;
     NSURL *url = [self fileUrl:keyName params:nil];
     UFMutableURLRequest *request  = NULL;
     NSArray *headers = @[@[@"Authorization",strAuth]];
@@ -731,7 +776,12 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
     if ([UFFileClient checkParametersAndNotify:keyName input:NULL isCheck:NO handler:handler]) {
         return;
     }
-    NSString *strAuth = [self.ufConfig signatureForFileOperationWithHttpMethod:@"HEAD" key:keyName md5Data:@"" contentType:@"" callBack:nil];
+    id signature = [self.ufConfig signatureForFileOperationWithHttpMethod:@"HEAD" key:keyName md5Data:@"" contentType:@"" callBack:nil];
+    if ([signature isKindOfClass:[UFError class]]) {
+        handler((UFError *)signature,nil);
+        return;
+    }
+    NSString *strAuth = (NSString *)signature;
     NSURL *url = [self fileUrl:keyName params:nil];
     UFMutableURLRequest *request  = NULL;
     NSArray *headers = @[@[@"Authorization",strAuth]];
@@ -756,7 +806,12 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
                            limit:(NSInteger)limit
            prefixFileListHandler:(UFPrefixFileListHandler _Nonnull)handler
 {
-    NSString *strAuth = [self.ufConfig signatureForFileOperationWithHttpMethod:@"GET" key:@"" md5Data:@"" contentType:@"" callBack:nil];
+    id signature = [self.ufConfig signatureForFileOperationWithHttpMethod:@"GET" key:@"" md5Data:@"" contentType:@"" callBack:nil];
+    if ([signature isKindOfClass:[UFError class]]) {
+        handler((UFError *)signature,nil);
+        return;
+    }
+    NSString *strAuth = (NSString *)signature;
     if (limit <= 0) {
         limit = 20;
     }
@@ -807,11 +862,11 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
     NSTimeInterval nowTime = [[NSDate date] timeIntervalSince1970];
     NSTimeInterval expiresTime = nowTime + timeInterval;
     NSString *expires_str = [NSString stringWithFormat:@"%lu",(NSInteger)expiresTime];
-    NSString *strAuth = [self.ufConfig signatureForGetFileUrlWithHttpMethod:@"GET" key:keyName md5Data:@"" contentType:@"" expiresTime:expires_str];
-    if (strAuth == nil) {
-        log4cplus_warn("UFileSDK", "signature error..\n");
+    id signature = [self.ufConfig signatureForGetFileUrlWithHttpMethod:@"GET" key:keyName md5Data:@"" contentType:@"" expiresTime:expires_str];
+    if ([signature isKindOfClass:[UFError class]]) {
         return nil;
     }
+    NSString *strAuth = (NSString *)signature;
     NSString *urlStr  = self.ufConfig.baseURL.absoluteString;
     urlStr = [urlStr stringByAppendingString:@"/"];
     urlStr = [urlStr stringByAppendingString:keyName];;
@@ -842,7 +897,12 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
     if ([UFFileClient checkParametersAndNotify:keyName input:NULL isCheck:NO handler:handler]) {
         return;
     }
-    NSString *strAuth = [self.ufConfig signatureForFileOperationWithHttpMethod:@"HEAD" key:keyName md5Data:@"" contentType:@"" callBack:nil];
+    id signature = [self.ufConfig signatureForFileOperationWithHttpMethod:@"HEAD" key:keyName md5Data:@"" contentType:@"" callBack:nil];
+    if ([signature isKindOfClass:[UFError class]]) {
+        handler((UFError *)signature,nil);
+        return;
+    }
+    NSString *strAuth = (NSString *)signature;
     NSURL *url = [self fileUrl:keyName params:nil];
     UFMutableURLRequest *request  = NULL;
     NSArray *headers = @[@[@"Authorization",strAuth]];

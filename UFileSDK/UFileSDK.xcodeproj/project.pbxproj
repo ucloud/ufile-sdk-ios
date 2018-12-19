@@ -24,7 +24,7 @@
 		AA6261C4219ABC85002170EC /* UFMutableURLRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6261C2219ABC84002170EC /* UFMutableURLRequest.h */; };
 		AA6261C5219ABC85002170EC /* UFMutableURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6261C3219ABC85002170EC /* UFMutableURLRequest.m */; };
 		AA86B83D2191832A00FD865A /* UFConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = AA86B83B2191832A00FD865A /* UFConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		AA86B83E2191832A00FD865A /* UFConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = AA86B83C2191832A00FD865A /* UFConfig.m */; };
+		AA86B83E2191832A00FD865A /* UFConfig.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA86B83C2191832A00FD865A /* UFConfig.mm */; };
 		AA86B84B2191906B00FD865A /* UFTools.h in Headers */ = {isa = PBXBuildFile; fileRef = AA86B8492191906B00FD865A /* UFTools.h */; };
 		AA86B84C2191906B00FD865A /* UFTools.m in Sources */ = {isa = PBXBuildFile; fileRef = AA86B84A2191906B00FD865A /* UFTools.m */; };
 		AA86B8522191916000FD865A /* UFFileClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA86B84E2191916000FD865A /* UFFileClient.mm */; };
@@ -65,7 +65,7 @@
 		AA6261C2219ABC84002170EC /* UFMutableURLRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UFMutableURLRequest.h; sourceTree = "<group>"; };
 		AA6261C3219ABC85002170EC /* UFMutableURLRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UFMutableURLRequest.m; sourceTree = "<group>"; };
 		AA86B83B2191832A00FD865A /* UFConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UFConfig.h; sourceTree = "<group>"; };
-		AA86B83C2191832A00FD865A /* UFConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UFConfig.m; sourceTree = "<group>"; };
+		AA86B83C2191832A00FD865A /* UFConfig.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = UFConfig.mm; sourceTree = "<group>"; };
 		AA86B8492191906B00FD865A /* UFTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UFTools.h; sourceTree = "<group>"; };
 		AA86B84A2191906B00FD865A /* UFTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UFTools.m; sourceTree = "<group>"; };
 		AA86B84E2191916000FD865A /* UFFileClient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UFFileClient.mm; sourceTree = "<group>"; };
@@ -140,7 +140,7 @@
 			isa = PBXGroup;
 			children = (
 				AA86B83B2191832A00FD865A /* UFConfig.h */,
-				AA86B83C2191832A00FD865A /* UFConfig.m */,
+				AA86B83C2191832A00FD865A /* UFConfig.mm */,
 				AAE4709A21ABD253007AF8C3 /* UFErrorModel.h */,
 				AAE4709B21ABD253007AF8C3 /* UFErrorModel.m */,
 				AAE470AD21AD4DC8007AF8C3 /* UFFileModel.h */,
@@ -398,7 +398,7 @@
 				AAD157792189A3BF008F70BF /* UFLog.mm in Sources */,
 				AAE4709D21ABD253007AF8C3 /* UFErrorModel.m in Sources */,
 				AAE470B021AD4DC8007AF8C3 /* UFFileModel.m in Sources */,
-				AA86B83E2191832A00FD865A /* UFConfig.m in Sources */,
+				AA86B83E2191832A00FD865A /* UFConfig.mm in Sources */,
 				AA86B84C2191906B00FD865A /* UFTools.m in Sources */,
 				AAD157732189A26F008F70BF /* UFSDKManager.mm in Sources */,
 				AA86B8542191916000FD865A /* UFURLSessionManager.m in Sources */,
