@@ -11,8 +11,6 @@
 #import <UFileSDK/UFileSDK.h>
 
 @interface SettingVC ()
-@property (weak, nonatomic) IBOutlet UITextView *apiPublicKeyTV;
-@property (weak, nonatomic) IBOutlet UITextView *apiPrivateKeyTV;
 @property (weak, nonatomic) IBOutlet UITextView *bucketPublicKeyTV;
 @property (weak, nonatomic) IBOutlet UITextView *bucketPrivateKeyTV;
 @property (weak, nonatomic) IBOutlet UITextView *proxySuffixTV;
