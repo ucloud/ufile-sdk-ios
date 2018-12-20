@@ -1,0 +1,16 @@
+PODS:
+  - UFileSDK (3.0.2)
+
+DEPENDENCIES:
+  - UFileSDK
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - UFileSDK
+
+SPEC CHECKSUMS:
+  UFileSDK: 9d110e6ab5a5f95446f96d111d603456db9896a1
+
+PODFILE CHECKSUM: ae01f334096029f22577da3ad4f3fd58e8b09b8e
+
+COCOAPODS: 1.6.0.beta.2
