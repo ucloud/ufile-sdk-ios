@@ -50,7 +50,7 @@ pod 'UFileSDK'
 
 注意，引入Framework后，需要在工程`Build Settings`的`Other Linker Flags`中加入`-lc++` 。如下图所示
 
-![](https://raw.githubusercontent.com/ufilesdk-dev/ufile-ios-sdk/master/documents/resources/readme_01.png)
+![](https://raw.githubusercontent.com/ucloud/ufile-sdk-ios/master/documents/resources/readme_01.png)
 
 ## 功能说明
 
@@ -68,7 +68,7 @@ pod 'UFileSDK'
  * 获取文件的`Etag`
  * 对比本地与远程文件的`Etag`
 
-其操作类是`UFFileClient.h`,以上各个功能详细使用方法请查看[Demo](https://github.com/ufilesdk-dev/ufile-ios-sdk/tree/master/Demos)
+其操作类是`UFFileClient.h`,以上各个功能详细使用方法请查看[SDK单元测试](https://github.com/ucloud/ufile-sdk-ios/blob/master/UFileSDK/UFileSDKTests/UFFileClientTests.m)或者我们提供的[Demo](https://github.com/ucloud/ufile-sdk-ios/tree/master/Demos)
 
 ### 代码示例
 
@@ -81,8 +81,11 @@ pod 'UFileSDK'
 ```
 #import <UFileSDK/UFileSDK.h>
 
-// 根据bucket配置创建fileClient对象
-UFConfig *ufConfig = [UFConfig instanceConfigWithPrivateToken:@"bucket的私钥" publicToken:@"bucket的私钥" bucket:@"bucket名称" encryptServer:nil proxySuffix:@"后缀域名"];
+ // 使用本地签名，不推荐使用这种方式
+UFConfig *ufConfig = [UFConfig instanceConfigWithPrivateToken:@"bucket私钥" publicToken:@"bucket公钥" bucket:@"bucket名称" fileOperateEncryptServer:nil fileAddressEncryptServer:nil proxySuffix:@"域名后缀"];
+    
+ // 使用服务器签名，推荐使用
+UFConfig *ufConfig = [UFConfig instanceConfigWithPrivateToken:nil publicToken:@"bucket公钥" bucket:@"bucket名称" fileOperateEncryptServer:@"文件操作签名服务器" fileAddressEncryptServer:@"获取文件URL的签名服务器" proxySuffix:@"域名后缀"];
 UFFileClient *fileClient =  [UFFileClient instanceFileClientWithConfig:ufConfig];
 
 ```
@@ -108,17 +111,17 @@ NSString* strPath = [[NSBundle mainBundle] pathForResource:@"initscreen" ofType:
 
 ### Demo程序
 
-我们在demo程序中，演示了文件管理和`bucket`管理的所有功能，你可以在本工程中查看其具体流程。另外，为了方便配置，我们在此还提供了[Demo配置说明文档](https://github.com/ufilesdk-dev/ufile-ios-sdk/tree/master/documents/demoSetting.md)。
+我们在demo程序中，演示了文件管理和`bucket`管理的所有功能，你可以在本工程中查看其具体流程。另外，为了能更好的理解并使用`UFile SDK`，我们在此还提供了[UFileSDKDemo说明文档](https://github.com/ucloud/ufile-sdk-ios/blob/master/documents/DemoIntroduction.md)
 
 
 ## 常见问题
 
 * `iOS 9+`强制使用`HTTPS`,使用`XCode`创建的项目默认不只支持`HTTP`，所以需要在`project build info` 添加`NSAppTransportSecurity`,在`NSAppTransportSecurity`下添加`NSAllowsArbitraryLoads`值设为`YES`,如下图。 
-	![](https://raw.githubusercontent.com/ufilesdk-dev/ufile-ios-sdk/master/documents/resources/readme_02.png)
+	![](https://raw.githubusercontent.com/ucloud/ufile-sdk-ios/master/documents/resources/readme_02.png)
 
 ## 联系我们
 
 * [UCloud官方网站: https://www.ucloud.cn/](https://www.ucloud.cn/)
-*  如有任何问题，欢迎提交[issue](https://github.com/ufilesdk-dev/ufile-ios-sdk/issues)或联系我们的技术支持，我们会第一时间解决问题。
+*  如有任何问题，欢迎提交[issue](https://github.com/ucloud/ufile-sdk-ios/issues)或联系我们的技术支持，我们会第一时间解决问题。
 
 
