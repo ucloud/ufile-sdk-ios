@@ -17,6 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
+        // 设置调试日志级别。注意：开发时设置为debug，发布时设置为error级别
+        UFSDKManager.shareInstance().settingSDKLogLevel(UFSDKLogLevel.DEBUG)
         return true
     }
 
