@@ -54,8 +54,6 @@ pod 'UFileSDK'
 
 ## 功能说明
 
-`SDK`共分为两大功能模块，即：文件操作模块、bucket管理模块。
-
 ### 文件操作功能
 
  * 文件上传(以路径方式；以NSData方式；分片上传)
@@ -111,7 +109,7 @@ NSString* strPath = [[NSBundle mainBundle] pathForResource:@"initscreen" ofType:
 
 ### Demo程序
 
-我们在demo程序中，演示了文件管理和`bucket`管理的所有功能，你可以在本工程中查看其具体流程。另外，为了能更好的理解并使用`UFile SDK`，我们在此还提供了[UFileSDKDemo说明文档](https://github.com/ucloud/ufile-sdk-ios/blob/master/documents/DemoIntroduction.md)
+我们在demo程序中，演示了文件操作的所有功能，你可以在本工程中查看其具体流程。另外，为了能更好的理解并使用`UFile SDK`，我们在此还提供了[UFileSDKDemo说明文档](https://github.com/ucloud/ufile-sdk-ios/blob/master/documents/DemoIntroduction.md)
 
 
 ## 常见问题
