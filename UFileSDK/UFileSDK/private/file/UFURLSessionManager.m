@@ -233,13 +233,13 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
       downloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)location
 {
-    NSError *fileManagerError = nil;
     self.downloadFileURL = nil;
     
     if (self.downloadTaskDidFinishDownloading) {
         self.downloadFileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
         if (self.downloadFileURL) {
-            [[NSFileManager defaultManager] moveItemAtURL:location toURL:self.downloadFileURL error:&fileManagerError];
+            NSData *fileData = [NSData dataWithContentsOfURL:location];
+            [fileData writeToURL:self.downloadFileURL atomically:YES];
         }
     }
 }
