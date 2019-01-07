@@ -106,6 +106,9 @@ NSString* strPath = [[NSBundle mainBundle] pathForResource:@"initscreen" ofType:
     }];
 ```
 
+### 服务器签名
+
+此处特别强调：我们推荐使用服务端签名。 服务端签名示例代码地址 [ufile-sdk-auth-server](https://github.com/ucloud/ufile-sdk-auth-server) ,你可以直接把它部署到你的服务器上配置好参数后在移动端使用。
 
 ### Demo程序
 
