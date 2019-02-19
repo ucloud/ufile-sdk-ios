@@ -11,6 +11,7 @@
 @interface FileUploadVC ()<UIImagePickerControllerDelegate,UINavigationControllerDelegate>
 @property (weak, nonatomic) IBOutlet UITextView *resTV;
 @property (nonatomic,strong)UIImagePickerController *imagePickerVC;
+@property (weak, nonatomic) IBOutlet UIProgressView *progressView;
 @end
 
 @implementation FileUploadVC
@@ -59,13 +60,22 @@
     });
 }
 
+- (void)processingUIBeforeDownload
+{
+    self.progressView.progress = 0.0;
+    self.progressView.progressTintColor = [UIColor blueColor];
+}
+
 - (IBAction)onpressedButtonUpload:(id)sender {
     [self clearRestv];
-    
+    [self processingUIBeforeDownload];
     NSString*  fileName = @"test.jpg";
     NSString* strPath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"jpg"];
     
     [self.fileClient uploadWithKeyName:fileName filePath:strPath mimeType:@"image/jpeg" progress:^(NSProgress * _Nonnull progress) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.progressView setProgress:progress.fractionCompleted animated:YES];
+        });
         
     } uploadHandler:^(UFError * _Nullable ufError, UFUploadResponse * _Nullable ufUploadResponse) {
         [self processUploadHandler:ufError response:ufUploadResponse];
@@ -85,10 +95,13 @@
 
 - (IBAction)onpressedButtonUploadFileWithFileMethod:(id)sender {
     [self clearRestv];
+    [self processingUIBeforeDownload];
     NSString *fileName = @"123.jpg";
     NSString* strPath = [[NSBundle mainBundle] pathForResource:@"initscreen" ofType:@"jpg"];
     [self.fileClient uploadWithKeyName:fileName filePath:strPath mimeType:@"image/jpeg" progress:^(NSProgress * _Nonnull progress) {
-        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.progressView setProgress:progress.fractionCompleted animated:YES];
+        });
     } uploadHandler:^(UFError * _Nullable ufError, UFUploadResponse * _Nullable ufUploadResponse) {
        [self processUploadHandler:ufError response:ufUploadResponse];
     }];
@@ -96,10 +109,13 @@
 
 - (IBAction)onpressedButtonUploadNSData:(id)sender {
     [self clearRestv];
+    [self processingUIBeforeDownload];
     NSString *key = @"hello";
     NSData *data  = [@"hello world" dataUsingEncoding:NSUTF8StringEncoding];
     [self.fileClient uploadWithKeyName:key fileData:data mimeType:NULL progress:^(NSProgress * _Nonnull progress) {
-        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.progressView setProgress:progress.fractionCompleted animated:YES];
+        });
     } uploadHandler:^(UFError * _Nullable ufError, UFUploadResponse * _Nullable ufUploadResponse) {
          [self processUploadHandler:ufError response:ufUploadResponse];
     }];

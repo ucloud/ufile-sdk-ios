@@ -14,7 +14,8 @@ class FileUploadVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
     var imagePickerVC:UIImagePickerController!
 
     @IBOutlet weak var resTV: UITextView!
-
+    @IBOutlet weak var progressView: UIProgressView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -48,6 +49,7 @@ class FileUploadVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
     @IBAction func onpressedButtonUpload(_ sender: Any)
     {
         self.clearRestv()
+        self.processingUIBeforeDownload()
         let fileName:String = "test.jpg"
         let strPath = Bundle.main.path(forResource: "test", ofType: "jpg")
         if strPath == nil {
@@ -56,7 +58,9 @@ class FileUploadVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
 
         weak var weakself:FileUploadVC! = self
         self.fileClient.upload(withKeyName: fileName, filePath:strPath! , mimeType: "image/jpeg", progress: { (progress:Progress) in
-        
+            DispatchQueue.main.async {
+                weakself.progressView.setProgress(Float(progress.fractionCompleted), animated: true)
+            }
         }) { (ufError:UFError?, ufUploadResponse:UFUploadResponse?) in
             weakself.processUploadHandler(ufError: ufError, ufUploadResponse: ufUploadResponse)
         }
@@ -79,11 +83,14 @@ class FileUploadVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
     @IBAction func onpressedButtonUploadFileWithFileMethod(_ sender: Any)
     {
         self.clearRestv()
+        self.processingUIBeforeDownload()
         let fileName:String = "123.jpg"
         let strPath = Bundle.main.path(forResource: "initscreen", ofType: "jpg")
         weak var weakself:FileUploadVC! = self
         self.fileClient.upload(withKeyName: fileName, filePath: strPath!, mimeType: "image/jpeg", progress: { (progress:Progress) in
-            
+            DispatchQueue.main.async {
+                weakself.progressView.setProgress(Float(progress.fractionCompleted), animated: true)
+            }
         }) { (ufError:UFError?, ufUploadResponse:UFUploadResponse?) in
             weakself.processUploadHandler(ufError: ufError, ufUploadResponse: ufUploadResponse)
         }
@@ -92,12 +99,15 @@ class FileUploadVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
     @IBAction func onpressedButtonUploadNSData(_ sender: Any)
     {
         self.clearRestv()
+        self.processingUIBeforeDownload()
         let key:String = "hello"
         let data:Data? = "hello world".data(using: .utf8)
         
         weak var weakself:FileUploadVC! = self
         self.fileClient.upload(withKeyName: key, fileData:data!, mimeType: nil, progress: { (progress:Progress) in
-            
+            DispatchQueue.main.async {
+                weakself.progressView.setProgress(Float(progress.fractionCompleted), animated: true)
+            }
         }) { (ufError:UFError?, ufUploadResponse:UFUploadResponse?) in
             weakself.processUploadHandler(ufError: ufError, ufUploadResponse: ufUploadResponse)
         }
@@ -136,6 +146,12 @@ class FileUploadVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController)
     {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    func processingUIBeforeDownload() -> Void
+    {
+        self.progressView.progress = 0.0
+        self.progressView.progressTintColor = UIColor.blue
     }
 
 }

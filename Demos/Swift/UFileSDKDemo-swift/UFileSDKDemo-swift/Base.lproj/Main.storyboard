@@ -302,7 +302,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ES0-A2-PnX">
-                                <rect key="frame" x="0.0" y="64" width="375" height="80"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="100"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Zc9-Yp-kfm">
                                         <rect key="frame" x="5" y="0.0" width="65" height="30"/>
@@ -341,7 +341,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V7B-lR-jMZ">
-                                        <rect key="frame" x="147.5" y="50" width="80" height="30"/>
+                                        <rect key="frame" x="147.5" y="70" width="80" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="80" id="iNz-H5-P4T"/>
                                             <constraint firstAttribute="height" constant="30" id="v28-4R-xuV"/>
@@ -353,7 +353,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3nl-pD-3fC">
-                                        <rect key="frame" x="5" y="50" width="80" height="30"/>
+                                        <rect key="frame" x="5" y="70" width="80" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="80" id="LuA-Y2-obZ"/>
                                             <constraint firstAttribute="height" constant="30" id="jyG-RY-5mT"/>
@@ -364,12 +364,20 @@
                                             <action selector="onpressedButtonUploadNSData:" destination="Sym-1n-Dgs" eventType="touchUpInside" id="AJq-dO-DJo"/>
                                         </connections>
                                     </button>
+                                    <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Vbj-VY-CN7">
+                                        <rect key="frame" x="10" y="49" width="355" height="2"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="2" id="Ipc-xW-9kI"/>
+                                        </constraints>
+                                    </progressView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="Vbj-VY-CN7" secondAttribute="trailing" constant="10" id="4c3-lE-7oj"/>
                                     <constraint firstAttribute="bottom" secondItem="3nl-pD-3fC" secondAttribute="bottom" id="8jl-z2-QoL"/>
                                     <constraint firstItem="PNn-7s-qhe" firstAttribute="centerX" secondItem="ES0-A2-PnX" secondAttribute="centerX" id="9rx-hw-WzB"/>
-                                    <constraint firstAttribute="height" constant="80" id="Ni7-eO-WPH"/>
+                                    <constraint firstItem="Vbj-VY-CN7" firstAttribute="leading" secondItem="ES0-A2-PnX" secondAttribute="leading" constant="10" id="AM0-g4-tm7"/>
+                                    <constraint firstAttribute="height" constant="100" id="Ni7-eO-WPH"/>
                                     <constraint firstAttribute="bottom" secondItem="V7B-lR-jMZ" secondAttribute="bottom" id="OUi-Qc-s1m"/>
                                     <constraint firstItem="Zc9-Yp-kfm" firstAttribute="top" secondItem="ES0-A2-PnX" secondAttribute="top" id="PC8-bJ-VeL"/>
                                     <constraint firstItem="V7B-lR-jMZ" firstAttribute="centerX" secondItem="ES0-A2-PnX" secondAttribute="centerX" id="SB0-fA-qfG"/>
@@ -377,11 +385,13 @@
                                     <constraint firstItem="PNn-7s-qhe" firstAttribute="top" secondItem="ES0-A2-PnX" secondAttribute="top" id="fHE-ue-VTY"/>
                                     <constraint firstItem="3nl-pD-3fC" firstAttribute="leading" secondItem="ES0-A2-PnX" secondAttribute="leading" constant="5" id="kh3-aI-CWg"/>
                                     <constraint firstItem="wX7-3f-suB" firstAttribute="top" secondItem="ES0-A2-PnX" secondAttribute="top" id="neC-kq-Bqh"/>
+                                    <constraint firstItem="Vbj-VY-CN7" firstAttribute="centerY" secondItem="ES0-A2-PnX" secondAttribute="centerY" id="s7n-fu-wHo"/>
                                     <constraint firstAttribute="trailing" secondItem="wX7-3f-suB" secondAttribute="trailing" constant="5" id="v3S-vI-hPA"/>
+                                    <constraint firstItem="Vbj-VY-CN7" firstAttribute="centerX" secondItem="ES0-A2-PnX" secondAttribute="centerX" id="wff-h9-f7r"/>
                                 </constraints>
                             </view>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="n0N-Xs-d7Z">
-                                <rect key="frame" x="0.0" y="144" width="375" height="523"/>
+                                <rect key="frame" x="0.0" y="164" width="375" height="503"/>
                                 <color key="backgroundColor" red="0.91372549020000005" green="1" blue="0.98431372549999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -401,6 +411,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="上传文件" id="LIT-Lg-eTn"/>
                     <connections>
+                        <outlet property="progressView" destination="Vbj-VY-CN7" id="M7a-c4-MLL"/>
                         <outlet property="resTV" destination="n0N-Xs-d7Z" id="9iN-It-Z1i"/>
                     </connections>
                 </viewController>
