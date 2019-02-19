@@ -395,7 +395,7 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
         handler([UFError sysErrorWithInvalidElements:@"construct request error"],nil);
         return;
     }
-    NSURLSessionUploadTask *task = [self.localSessionManager uploadTaskWithRequest:request fromFile:nil progress:NULL completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+    NSURLSessionUploadTask *task = [self.localSessionManager uploadTaskWithRequest:request fromFile:nil progress:uploadProgress completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
         if ([self processingHttpResponseError:error response:response body:responseObject handler:handler]) {
             return;
         }
