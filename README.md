@@ -119,6 +119,10 @@ NSString* strPath = [[NSBundle mainBundle] pathForResource:@"initscreen" ofType:
 
 * `iOS 9+`强制使用`HTTPS`,使用`XCode`创建的项目默认不只支持`HTTP`，所以需要在`project build info` 添加`NSAppTransportSecurity`,在`NSAppTransportSecurity`下添加`NSAllowsArbitraryLoads`值设为`YES`,如下图。 
 	![](https://raw.githubusercontent.com/ucloud/ufile-sdk-ios/master/documents/resources/readme_02.png)
+	
+## 版本记录
+
+[UFileSDK release history](https://github.com/ucloud/ufile-sdk-ios/blob/master/documents/update.md)
 
 ## 联系我们
 

@@ -26,3 +26,7 @@
 ### v-3.0.4(2019.02.19)
 
 * fix bug: 上传文件进度无效
+
+### v-3.0.5(2019.05.07)
+
+* fix warning: 发布SDK到cocoapods时`MIT LICENSE`路径错误
