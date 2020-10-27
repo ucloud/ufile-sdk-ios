@@ -4,7 +4,7 @@
 
 ![](https://camo.githubusercontent.com/86885d3ee622f43456c8b890b56c3f05d6ec2c5e/687474703a2f2f636c692d75636c6f75642d6c6f676f2e73672e7566696c656f732e636f6d2f75636c6f75642e706e67)
 
-本文档主要是`US3(原名UFile) SDK for iOS`的使用说明文档，下面我们从以下几个方面做介绍： 
+本文档主要是`US3 (原名UFile) SDK for iOS`的使用说明文档，下面我们从以下几个方面做介绍： 
 
 * 目录结构
 * 环境要求
