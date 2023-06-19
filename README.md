@@ -129,4 +129,5 @@ NSString* strPath = [[NSBundle mainBundle] pathForResource:@"initscreen" ofType:
 * [UCloud官方网站: https://www.ucloud.cn/](https://www.ucloud.cn/)
 *  如有任何问题，欢迎提交[issue](https://github.com/ucloud/ufile-sdk-ios/issues)或联系我们的技术支持，我们会第一时间解决问题。
 
-
+## 许可证
+[Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.html)      
