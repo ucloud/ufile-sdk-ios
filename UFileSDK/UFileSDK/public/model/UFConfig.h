@@ -55,6 +55,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,readonly) NSURL *baseURL;
 
 /**
+ 是否是Https请求
+ */
+@property (nonatomic, readonly) BOOL isHttps;
+
+/**
  @brief 使用SDK所必须的一些参数设置
  
  @discussion 建议使用签名服务器的方式进行签名，这样做避免了私钥暴露在app中，这样做更加安全。签名服务器地址有两个，一个是文件操作签名服务器地址，另一个是获取文件地址时的签名服务器地址。其应用场景如下：
@@ -70,6 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param fileOperateEncryptServer 文件操作的签名服务器地址,如果该字段为空，则进行本地签名
  @param fileAddressEncryptServer 获取文件地址时的签名服务器，如果该字段为空，则进行本地签名
  @param proxySuffix   默认域名后缀 eg: ufile.cloud.cn
+ @param isHttps   是否使用https请求
  @return 返回一个 `UFAuthor` 实例
  */
 + (instancetype)instanceConfigWithPrivateToken:(NSString * _Nullable)privateToken
@@ -77,7 +83,8 @@ NS_ASSUME_NONNULL_BEGIN
                                     bucket:(NSString * _Nonnull)bucket
                              fileOperateEncryptServer:(NSString * _Nullable)fileOperateEncryptServer
                           fileAddressEncryptServer:(NSString * _Nullable)fileAddressEncryptServer
-                                   proxySuffix:(NSString * _Nonnull)proxySuffix;
+                                   proxySuffix:(NSString * _Nonnull)proxySuffix
+                                       isHttps:(BOOL)isHttps;
 
 /**
  @breif 生成签名(内部使用)

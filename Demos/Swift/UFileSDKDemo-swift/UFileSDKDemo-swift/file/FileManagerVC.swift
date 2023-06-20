@@ -26,7 +26,7 @@ class FileManagerVC: UIViewController {
             return
         }
         
-        let ufConfig = UFConfig.instanceConfig(withPrivateToken: bucketPrivateKey, publicToken: bucketPublicKey!, bucket: bucketName!, fileOperateEncryptServer: fileOperateEncryptServer, fileAddressEncryptServer: fileAddressEncryptServer, proxySuffix: proxySuffix!);
+        let ufConfig = UFConfig.instanceConfig(withPrivateToken: bucketPrivateKey, publicToken: bucketPublicKey!, bucket: bucketName!, fileOperateEncryptServer: fileOperateEncryptServer, fileAddressEncryptServer: fileAddressEncryptServer, proxySuffix: proxySuffix!, isHttps:true);
 
         fileClient = UFFileClient.instanceFileClient(with: ufConfig)
 

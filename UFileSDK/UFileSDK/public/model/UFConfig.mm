@@ -18,6 +18,7 @@
           fileOperateEncryptServer:(NSString *)fileOperateEncryptServer
           fileAddressEncryptServer:(NSString *)fileAddressEncryptServer
                        proxySuffix:(NSString *)proxySuffix
+                                   isHttps:(BOOL)isHttps
 {
     self  = [super init];
     if (!self) {
@@ -41,10 +42,14 @@
     if (proxySuffix) {
         _proxySuffix = proxySuffix;
     }
+    _isHttps = isHttps;
+    /*
     NSString *urlstr  = [NSString stringWithFormat:@"http://%@", self.proxySuffix];
     NSArray *arr  = [urlstr componentsSeparatedByString:@"://"];
     [NSString stringWithFormat:@"%@://%@.%@", arr[0], self.bucket, arr[1]];
-    _baseURL = [NSURL URLWithString: [NSString stringWithFormat:@"%@://%@.%@", arr[0], self.bucket, arr[1]] ];
+    */
+    NSString *urlStr = [NSString stringWithFormat:@"%@://%@.%@", (isHttps ? @"https" : @"http"), self.bucket, self.proxySuffix];
+    _baseURL = [NSURL URLWithString: urlStr];
     return self;
 }
 
@@ -54,8 +59,9 @@
                       fileOperateEncryptServer:(NSString * _Nullable)fileOperateEncryptServer
                       fileAddressEncryptServer:(NSString * _Nullable)fileAddressEncryptServer
                                    proxySuffix:(NSString * _Nonnull)proxySuffix
+                                       isHttps:(BOOL)isHttps
 {
-    return[[self alloc] initConfigWithPrivateToken:privateToken publicToken:publicToken bucket:bucket fileOperateEncryptServer:fileOperateEncryptServer fileAddressEncryptServer:fileAddressEncryptServer proxySuffix:proxySuffix];
+    return [[self alloc] initConfigWithPrivateToken:privateToken publicToken:publicToken bucket:bucket fileOperateEncryptServer:fileOperateEncryptServer fileAddressEncryptServer:fileAddressEncryptServer proxySuffix:proxySuffix isHttps:isHttps];
 }
 
 - (NSString *)description
