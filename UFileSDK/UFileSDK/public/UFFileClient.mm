@@ -666,7 +666,7 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
     }
     NSString *strAuth = (NSString *)signature;
     NSArray *headers  =[self constructHeadersForType:UFHttpResponseTypeDownload author:strAuth options:option length:0];
-    headers = nil;  // 私有空间不需要构造headers
+    // headers = nil;  // 私有空间不需要构造headers
 //    NSURL *url = [self fileUrl:keyName params:nil];
     NSURL *url = [NSURL URLWithString:[self filePrivateUrlWithKeyName:keyName expiresTime:0]];
     UFMutableURLRequest *request = NULL;
@@ -717,7 +717,7 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
     }
     NSString *strAuth = (NSString *)signature;
     NSArray *headers  =[self constructHeadersForType:UFHttpResponseTypeDownload author:strAuth options:option length:0];
-    headers = nil;
+    // headers = nil;
 //    NSURL *url = [self fileUrl:keyName params:nil];
     NSURL *url = [NSURL URLWithString:[self filePrivateUrlWithKeyName:keyName expiresTime:0]];
     UFMutableURLRequest *request = NULL;

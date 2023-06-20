@@ -1,5 +1,23 @@
 # UFileSDK release history
 
+### v-3.0.6(2023.06.20)
+
+* fix bug: 分片下载
+* 支持https
+* 最低系统版本兼容调整（>=11.0）
+
+### v-3.0.5(2019.05.07)
+
+* fix warning: 发布SDK到cocoapods时`MIT LICENSE`路径错误
+
+### v-3.0.4(2019.02.19)
+
+* fix bug: 上传文件进度无效
+
+### v-3.0.3(2019.01.02)
+
+* fix issue-#1
+
 ### v-3.0.2(2018.12.21)
 
 * 日志级别设置
@@ -19,14 +37,3 @@
 * 获取`bucket`下文件的下载地址
 * 比较本地文件与`bucket`中文件的etag值
 
-### v-3.0.3(2019.01.02)
-
-* fix issue-#1
-
-### v-3.0.4(2019.02.19)
-
-* fix bug: 上传文件进度无效
-
-### v-3.0.5(2019.05.07)
-
-* fix warning: 发布SDK到cocoapods时`MIT LICENSE`路径错误

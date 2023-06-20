@@ -27,7 +27,7 @@
 
 ## 环境要求
 
-* iOS系统版本>=9.0
+* iOS系统版本>=11.0
 * 必须是`UCloud`的用户，并开通了`US3`服务。
 
 ## 安装使用
@@ -80,10 +80,10 @@ pod 'UFileSDK'
 #import <UFileSDK/UFileSDK.h>
 
  // 使用本地签名，不推荐使用这种方式
-UFConfig *ufConfig = [UFConfig instanceConfigWithPrivateToken:@"bucket私钥" publicToken:@"bucket公钥" bucket:@"bucket名称" fileOperateEncryptServer:nil fileAddressEncryptServer:nil proxySuffix:@"域名后缀"];
+UFConfig *ufConfig = [UFConfig instanceConfigWithPrivateToken:@"bucket私钥" publicToken:@"bucket公钥" bucket:@"bucket名称" fileOperateEncryptServer:nil fileAddressEncryptServer:nil proxySuffix:@"域名后缀" isHttps:YES];
     
  // 使用服务器签名，推荐使用
-UFConfig *ufConfig = [UFConfig instanceConfigWithPrivateToken:nil publicToken:@"bucket公钥" bucket:@"bucket名称" fileOperateEncryptServer:@"文件操作签名服务器" fileAddressEncryptServer:@"获取文件URL的签名服务器" proxySuffix:@"域名后缀"];
+UFConfig *ufConfig = [UFConfig instanceConfigWithPrivateToken:nil publicToken:@"bucket公钥" bucket:@"bucket名称" fileOperateEncryptServer:@"文件操作签名服务器" fileAddressEncryptServer:@"获取文件URL的签名服务器" proxySuffix:@"域名后缀" isHttps:YES];
 UFFileClient *fileClient =  [UFFileClient instanceFileClientWithConfig:ufConfig];
 
 ```
