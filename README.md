@@ -1,5 +1,8 @@
 # US3 SDK for iOS
 
+[![Software License](https://img.shields.io/github/license/saltstack/salt)](LICENSE)
+
+
 ## 概要
 
 ![](https://camo.githubusercontent.com/86885d3ee622f43456c8b890b56c3f05d6ec2c5e/687474703a2f2f636c692d75636c6f75642d6c6f676f2e73672e7566696c656f732e636f6d2f75636c6f75642e706e67)
