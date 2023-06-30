@@ -8,7 +8,7 @@
 
 #import "UFURLSessionManager.h"
 #import <objc/runtime.h>
-
+#import "UFTools.h"
 
 
 #ifndef NSFoundationVersionNumber_iOS_8_0
@@ -149,12 +149,24 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 }
 
 - (void)cleanUpProgressForTask:(NSURLSessionTask *)task {
-    [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(countOfBytesReceived))];
-    [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(countOfBytesExpectedToReceive))];
-    [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(countOfBytesSent))];
-    [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(countOfBytesExpectedToSend))];
-    [self.downloadProgress removeObserver:self forKeyPath:NSStringFromSelector(@selector(fractionCompleted))];
-    [self.uploadProgress removeObserver:self forKeyPath:NSStringFromSelector(@selector(fractionCompleted))];
+    if ([task respondsToSelector:@selector(countOfBytesReceived)]) {
+        [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(countOfBytesReceived))];
+    }
+    if ([task respondsToSelector:@selector(countOfBytesExpectedToReceive)]) {
+        [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(countOfBytesExpectedToReceive))];
+    }
+    if ([task respondsToSelector:@selector(countOfBytesSent)]) {
+        [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(countOfBytesSent))];
+    }
+    if ([task respondsToSelector:@selector(countOfBytesExpectedToSend)]) {
+        [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(countOfBytesExpectedToSend))];
+    }
+    if ([self.downloadProgress respondsToSelector:@selector(fractionCompleted)]) {
+        [self.downloadProgress removeObserver:self forKeyPath:NSStringFromSelector(@selector(fractionCompleted))];
+    }
+    if ([self.uploadProgress respondsToSelector:@selector(fractionCompleted)]) {
+        [self.uploadProgress removeObserver:self forKeyPath:NSStringFromSelector(@selector(fractionCompleted))];
+    }
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
@@ -259,7 +271,7 @@ typedef NSURL  * (^UFileDestinationURL)(NSURL *targetPath, NSURLResponse *respon
 @property (readwrite, nonatomic, strong) NSLock *lock;
 
 @property (readonly, nonatomic, strong) NSURLSession * defaultSession;
-@property (readonly, nonatomic, strong) NSURLSession * downloadSession;
+@property (readonly, nonatomic, strong) NSURLSession * backgroundDownloadSession;
 
 
 @end
@@ -278,6 +290,12 @@ typedef NSURL  * (^UFileDestinationURL)(NSURL *targetPath, NSURLResponse *respon
     _defaultSession = [NSURLSession sessionWithConfiguration:config
                                                     delegate:self
                                                delegateQueue:self.operationQueue];
+    
+    NSURLSessionConfiguration *backgroundSessionConfig = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:UFTools.appBundleIdentifier];
+    backgroundSessionConfig.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+    _backgroundDownloadSession = [NSURLSession sessionWithConfiguration:backgroundSessionConfig
+                                                               delegate:self
+                                                          delegateQueue:self.operationQueue];
     
     self.mutableTaskDelegatesKeyedByTaskIdentifier = [[NSMutableDictionary alloc] init];
     return self;
@@ -353,6 +371,32 @@ typedef NSURL  * (^UFileDestinationURL)(NSURL *targetPath, NSURLResponse *respon
     __block NSURLSessionDownloadTask *downloadTask = nil;
     url_session_manager_create_task_safely(^{
         downloadTask = [self.defaultSession downloadTaskWithRequest:request];
+    });
+
+    [self addDelegateForDownloadTask:downloadTask progress:downloadProgressBlock destination:destination completionHandler:completionHandler];
+    return downloadTask;
+}
+
+- (NSURLSessionDownloadTask *)startBackgroundDownloadTask:(NSData *)resumeData
+                                              destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
+                                                 progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock
+                                        completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler {
+    __block NSURLSessionDownloadTask *downloadTask = nil;
+    url_session_manager_create_task_safely(^{
+        downloadTask = [self.backgroundDownloadSession downloadTaskWithResumeData:resumeData];
+    });
+
+    [self addDelegateForDownloadTask:downloadTask progress:downloadProgressBlock destination:destination completionHandler:completionHandler];
+    return downloadTask;
+}
+
+- (NSURLSessionDownloadTask *)recoverDownloadTask:(NSData *)resumeData
+                                              destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
+                                                 progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock
+                                        completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler {
+    __block NSURLSessionDownloadTask *downloadTask = nil;
+    url_session_manager_create_task_safely(^{
+        downloadTask = [self.defaultSession downloadTaskWithResumeData:resumeData];
     });
 
     [self addDelegateForDownloadTask:downloadTask progress:downloadProgressBlock destination:destination completionHandler:completionHandler];
@@ -469,7 +513,7 @@ didCompleteWithError:(NSError *)error
     UFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:task];
     
     // delegate may be nil when completing a task in the background
-    if (delegate) {
+    if (delegate && (error == nil)) {
         [delegate URLSession:session task:task didCompleteWithError:error];
         
         [self removeDelegateForTask:task];
@@ -503,7 +547,9 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
 expectedTotalBytes:(int64_t)expectedTotalBytes
 {
     UFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:downloadTask];
-    [delegate URLSession:session downloadTask:downloadTask didResumeAtOffset:fileOffset expectedTotalBytes:expectedTotalBytes];
+    if ([delegate respondsToSelector:@selector(URLSession:downloadTask:didResumeAtOffset:expectedTotalBytes:)]) {
+        [delegate URLSession:session downloadTask:downloadTask didResumeAtOffset:fileOffset expectedTotalBytes:expectedTotalBytes];
+    }
 }
 
 @end
