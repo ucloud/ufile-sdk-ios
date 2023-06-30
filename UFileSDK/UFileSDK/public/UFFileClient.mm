@@ -13,6 +13,7 @@
 #include "log4cplus_ufile.h"
 #import "UFMutableURLRequest.h"
 #import "UFErrorModel.h"
+#import <UIKit/UIKit.h>
 
 typedef void (^UFFileOperationHandler)(id _Nullable obj1,id _Nullable obj2);
 
@@ -49,6 +50,11 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
 
 @property (nonatomic,strong) UFURLSessionManager *localSessionManager;
 @property (nonatomic,strong) UFConfig  *ufConfig;
+@property (nonatomic,strong) NSURLSessionDownloadTask *downloadTask;
+@property (nonatomic,strong) NSURLSessionDownloadTask *backgroundDownloadTask;
+@property (nonatomic,copy) UFProgress downloadProgress;
+@property (nonatomic,copy) UFDownloadHandler downloadHandler;
+@property (nonatomic,copy) NSString *filePath;
 
 @end
 
@@ -63,6 +69,7 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
     if (ufConfig) {
         self.ufConfig =  ufConfig;
     }
+    [self addNotification];
     return self;
 }
 
@@ -741,6 +748,85 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
     }];
     
     [task resume];
+    
+    self.filePath = path;
+    self.downloadProgress = downloadProgress;
+    self.downloadHandler = handler;
+    self.downloadTask = task;
+}
+
+#pragma mark- 文件下载（后台支持）
+
+- (void)addNotification {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(applicationWillResignActive)
+                                                     name:UIApplicationWillResignActiveNotification
+                                               object:nil];
+        
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(applicationDidBecomeActive)
+                                                     name:UIApplicationDidBecomeActiveNotification
+                                                   object:nil];
+}
+
+- (void)applicationWillResignActive {
+    if (self.downloadTask && self.downloadTask.state == NSURLSessionTaskStateRunning) {
+        [self.downloadTask cancelByProducingResumeData:^(NSData * _Nullable resumeData) {
+            if (resumeData == nil) {
+                return;
+            }
+            [self startBackgroundDownloadTaskWithResumeData: resumeData];
+        }];
+    }
+}
+
+- (void)applicationDidBecomeActive {
+    if (self.backgroundDownloadTask && self.backgroundDownloadTask.state == NSURLSessionTaskStateRunning) {
+        [self.backgroundDownloadTask cancelByProducingResumeData:^(NSData * _Nullable resumeData) {
+            if (resumeData == nil) {
+                return;
+            }
+            [self recoverDownloadTaskWithResumeData: resumeData];
+        }];
+    }
+}
+
+- (void)startBackgroundDownloadTaskWithResumeData:(NSData *)resumeData {
+    // fix iOS11 bug
+    resumeData = [UFTools cleanResumeData:resumeData];
+    [self.localSessionManager removeDelegateForTask:self.downloadTask];
+    self.downloadTask = nil;
+    NSURLSessionDownloadTask *task = [self.localSessionManager startBackgroundDownloadTask:resumeData destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
+        return [NSURL fileURLWithPath:self.filePath];;
+    } progress:self.downloadProgress completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nonnull filePath, NSError * _Nonnull error) {
+        if ([self processingHttpResponseError:error response:response body:nil handler:self.downloadHandler]) {
+            return;
+        }
+        UFDownloadResponse *downResponse = [self constructHttpResponseObject:UFHttpResponseTypeDownload response:response body:nil filePath:filePath handler:self.downloadHandler];
+        log4cplus_info("UFSDK_Download", "download succ , server response info-->%s\n",[downResponse.description UTF8String]);
+        self.downloadHandler(nil,downResponse);
+    }];
+    [task resume];
+    self.backgroundDownloadTask = task;
+}
+
+- (void)recoverDownloadTaskWithResumeData:(NSData *)resumeData {
+    // fix iOS11 bug
+    resumeData = [UFTools cleanResumeData:resumeData];
+    [self.localSessionManager removeDelegateForTask:self.backgroundDownloadTask];
+    self.backgroundDownloadTask = nil;
+    NSURLSessionDownloadTask *task = [self.localSessionManager recoverDownloadTask:resumeData destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
+        return [NSURL fileURLWithPath:self.filePath];
+    } progress:self.downloadProgress completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nonnull filePath, NSError * _Nonnull error) {
+        if ([self processingHttpResponseError:error response:response body:nil handler:self.downloadHandler]) {
+            return;
+        }
+        UFDownloadResponse *downResponse = [self constructHttpResponseObject:UFHttpResponseTypeDownload response:response body:nil filePath:filePath handler:self.downloadHandler];
+        log4cplus_info("UFSDK_Download", "download succ , server response info-->%s\n",[downResponse.description UTF8String]);
+        self.downloadHandler(nil,downResponse);
+    }];
+    [task resume];
+    self.downloadTask = task;
 }
 
 #pragma mark- 文件删除
@@ -961,5 +1047,9 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
         callBack(NO);
              
     }];
+}
+
+-(void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 @end

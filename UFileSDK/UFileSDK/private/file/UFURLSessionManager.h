@@ -41,6 +41,18 @@ NS_ASSUME_NONNULL_BEGIN
                                              progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock
                                     completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
 
+- (NSURLSessionDownloadTask *)startBackgroundDownloadTask:(NSData *)resumeData
+                                              destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
+                                                 progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock
+                                        completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
+
+- (NSURLSessionDownloadTask *)recoverDownloadTask:(NSData *)resumeData
+                                              destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
+                                                 progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock
+                                completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
+
+- (void)removeDelegateForTask:(NSURLSessionTask *)task;
+
 @end
 
 NS_ASSUME_NONNULL_END

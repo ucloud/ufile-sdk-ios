@@ -188,6 +188,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  @brief 文件下载到指定目录
+ @discussion 注意：只有该方法支持文件后台下载
 
  @param keyName 文件名称
  @param path 文件要存储的目录

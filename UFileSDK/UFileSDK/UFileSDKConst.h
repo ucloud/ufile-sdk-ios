@@ -47,7 +47,7 @@ static const int KUFInvalidElements = -3; // instance array or dictionary error
 #define  KUFileSDKDownloadData   @"UFDownloadData"
 #define  KUFileSDKDownloadDestinationPath  @"UFDownloadDestinationPath"
 
-#define  KUFileSDKVersion  @"3.0.5"
+#define  KUFileSDKVersion  @"3.0.7"
 
 
 /****    for UFMultiPartInfo  ****/

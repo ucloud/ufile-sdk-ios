@@ -27,6 +27,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark- URL编码
 +(NSString*)urlEncode:(NSString *)connection_url;
+
+#pragma mark- 清洗ResumeData数据
++ (NSData *)cleanResumeData:(NSData *)resumeData;
+
+#pragma mark- App 包名
++(NSString*)appBundleIdentifier;
 @end
 
 NS_ASSUME_NONNULL_END
