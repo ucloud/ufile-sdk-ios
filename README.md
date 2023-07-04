@@ -68,6 +68,15 @@ pod 'UFileSDK'
 
 其操作类是`UFFileClient.h`,以上各个功能详细使用方法请查看[SDK单元测试](https://github.com/ucloud/ufile-sdk-ios/blob/master/UFileSDK/UFileSDKTests/UFFileClientTests.m)或者我们提供的[Demo](https://github.com/ucloud/ufile-sdk-ios/tree/master/Demos)
 
+### 后台下载功能
+
+* 在项目的 Capability 中启用 Background Modes -> 勾选Background fetch.
+* 在AppDelegate里添加下面的代码：
+```
+// 后台下载任务全部完成时回调
+- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)(void))completionHandler;
+```
+
 ### 代码示例
 
 #### 文件管理
