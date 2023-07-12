@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "UFileSDK"
-  s.version      = "3.0.7"
+  s.version      = "3.0.8"
   s.summary      = "UCloud Object Storage SDK for iOS"
 
   # This description is used to generate tags and improve search results.
@@ -130,9 +130,9 @@ Pod::Spec.new do |s|
   #  where they will only apply to your library. If you depend on other Podspecs
   #  you can include multiple dependencies to ensure it works.
 
-   # s.requires_arc = true
+  s.requires_arc = true
 
-   s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+   # s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
   # s.dependency "JSONKit", "~> 1.4"

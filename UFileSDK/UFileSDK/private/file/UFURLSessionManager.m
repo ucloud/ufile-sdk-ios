@@ -271,8 +271,7 @@ typedef NSURL  * (^UFileDestinationURL)(NSURL *targetPath, NSURLResponse *respon
 @property (readwrite, nonatomic, strong) NSLock *lock;
 
 @property (readonly, nonatomic, strong) NSURLSession * defaultSession;
-@property (readonly, nonatomic, strong) NSURLSession * backgroundDownloadSession;
-
+@property (readonly, nonatomic, strong) NSURLSession * backgroundSession;
 
 @end
 
@@ -293,7 +292,7 @@ typedef NSURL  * (^UFileDestinationURL)(NSURL *targetPath, NSURLResponse *respon
     
     NSURLSessionConfiguration *backgroundSessionConfig = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:UFTools.appBundleIdentifier];
     backgroundSessionConfig.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
-    _backgroundDownloadSession = [NSURLSession sessionWithConfiguration:backgroundSessionConfig
+    _backgroundSession = [NSURLSession sessionWithConfiguration:backgroundSessionConfig
                                                                delegate:self
                                                           delegateQueue:self.operationQueue];
     
@@ -337,7 +336,7 @@ typedef NSURL  * (^UFileDestinationURL)(NSURL *targetPath, NSURLResponse *respon
 {
     __block NSURLSessionUploadTask *uploadTask = nil;
     url_session_manager_create_task_safely(^{
-        uploadTask = [self.defaultSession uploadTaskWithRequest:request fromFile:fileURL];
+        uploadTask = [self.backgroundSession uploadTaskWithRequest:request fromFile:fileURL];
     });
     
     
@@ -370,33 +369,7 @@ typedef NSURL  * (^UFileDestinationURL)(NSURL *targetPath, NSURLResponse *respon
 {
     __block NSURLSessionDownloadTask *downloadTask = nil;
     url_session_manager_create_task_safely(^{
-        downloadTask = [self.defaultSession downloadTaskWithRequest:request];
-    });
-
-    [self addDelegateForDownloadTask:downloadTask progress:downloadProgressBlock destination:destination completionHandler:completionHandler];
-    return downloadTask;
-}
-
-- (NSURLSessionDownloadTask *)startBackgroundDownloadTask:(NSData *)resumeData
-                                              destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
-                                                 progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock
-                                        completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler {
-    __block NSURLSessionDownloadTask *downloadTask = nil;
-    url_session_manager_create_task_safely(^{
-        downloadTask = [self.backgroundDownloadSession downloadTaskWithResumeData:resumeData];
-    });
-
-    [self addDelegateForDownloadTask:downloadTask progress:downloadProgressBlock destination:destination completionHandler:completionHandler];
-    return downloadTask;
-}
-
-- (NSURLSessionDownloadTask *)recoverDownloadTask:(NSData *)resumeData
-                                              destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
-                                                 progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock
-                                        completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler {
-    __block NSURLSessionDownloadTask *downloadTask = nil;
-    url_session_manager_create_task_safely(^{
-        downloadTask = [self.defaultSession downloadTaskWithResumeData:resumeData];
+        downloadTask = [self.backgroundSession downloadTaskWithRequest:request];
     });
 
     [self addDelegateForDownloadTask:downloadTask progress:downloadProgressBlock destination:destination completionHandler:completionHandler];

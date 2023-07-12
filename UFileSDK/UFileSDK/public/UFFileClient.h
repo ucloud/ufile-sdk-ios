@@ -45,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark- file upload
 /**
  @brief 文件上传
- @discussion 用于文件上传，以文件方式上传
+ @discussion 用于文件上传，以文件方式上传（支持后台上传）
  @param keyName  文件的key，即你想把该文件设置的名称
  @param filePath 文件路径
  @param mimeType 文件的mime类型，如果为空，默认就是二进制流 "application/octet-stream"; 如果不为空，就按照用户输入的mime类型
