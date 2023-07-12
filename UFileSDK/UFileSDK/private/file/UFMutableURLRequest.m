@@ -27,7 +27,7 @@
     for (NSArray *item in header) {
         [self addValue:item[1] forHTTPHeaderField:item[0]];
     }
-    [self addValue:[NSString stringWithFormat:@"UFile iOS/%@",KUFileSDKVersion] forHTTPHeaderField:@"UserAgent"];
+    [self addValue:[NSString stringWithFormat:@"UFile iOS/%@",KUFileSDKVersion] forHTTPHeaderField:@"User-Agent"];
     [self setHTTPBody:bodyData];
     
     return self;

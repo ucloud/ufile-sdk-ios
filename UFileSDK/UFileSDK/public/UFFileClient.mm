@@ -397,7 +397,7 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
         for (NSArray *item in headers) {
             [request addValue:item[1] forHTTPHeaderField:item[0]];
         }
-        [request addValue:[NSString stringWithFormat:@"UFile iOS/%@",KUFileSDKVersion] forHTTPHeaderField:@"UserAgent"];
+        [request addValue:[NSString stringWithFormat:@"UFile iOS/%@",KUFileSDKVersion] forHTTPHeaderField:@"User-Agent"];
     } @catch (NSException *exception) {
         log4cplus_warn("UFSDK_Upload", "upload error , error info %s\n",[exception.description UTF8String]);
         handler([UFError sysErrorWithInvalidElements:@"construct request error"],nil);
@@ -737,7 +737,7 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
         for (NSArray *item in headers) {
             [request addValue:item[1] forHTTPHeaderField:item[0]];
         }
-        [request addValue:[NSString stringWithFormat:@"UFile iOS/%@",KUFileSDKVersion] forHTTPHeaderField:@"UserAgent"];
+        [request addValue:[NSString stringWithFormat:@"UFile iOS/%@",KUFileSDKVersion] forHTTPHeaderField:@"User-Agent"];
     } catch (NSException *exception) {
         log4cplus_warn("UFSDK_Download", "upload error , error info %s\n",[exception.description UTF8String]);
         handler([UFError sysErrorWithInvalidElements:@"construct request error"],nil);
