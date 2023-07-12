@@ -226,25 +226,6 @@ uint8_t * INT2LE(uint8_t data)
     return encodedSting;
 }
 
-#pragma mark- 清洗ResumeData数据
-+ (NSData *)cleanResumeData:(NSData *)resumeData {
-    if (UF_DEVICE_VERSION >= 11.0f && UF_DEVICE_VERSION < 11.2f) {
-        // fix iOS11 bug
-        NSString *dataString = [[NSString alloc] initWithData:resumeData encoding:NSUTF8StringEncoding];
-        if ([dataString containsString:@"<key>NSURLSessionResumeByteRange</key>"]) {
-            NSRange rangeKey = [dataString rangeOfString:@"<key>NSURLSessionResumeByteRange</key>"];
-            NSString *headStr = [dataString substringToIndex:rangeKey.location];
-            NSString *backStr = [dataString substringFromIndex:rangeKey.location];
-            
-            NSRange rangeValue = [backStr rangeOfString:@"</string>\n\t"];
-            NSString *tailStr = [backStr substringFromIndex:rangeValue.location + rangeValue.length];
-            dataString = [headStr stringByAppendingString:tailStr];
-        }
-        return [dataString dataUsingEncoding:NSUTF8StringEncoding];
-    }
-    return resumeData;
-}
-
 #pragma mark- App 包名
 +(NSString*)appBundleIdentifier{
     NSString *bundleId = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
