@@ -229,6 +229,6 @@ uint8_t * INT2LE(uint8_t data)
 #pragma mark- App 包名
 +(NSString*)appBundleIdentifier{
     NSString *bundleId = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
-    return [NSString stringWithFormat:@"%@.UFileBGDownloader", bundleId];
+    return [NSString stringWithFormat:@"%@", bundleId];
 }
 @end

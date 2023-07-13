@@ -50,6 +50,30 @@
     __weak typeof(self) weakself = self;
     
 //    NSLog(@"%@,---data leng:%d",self.dataManager.multiPartInfo,(int)([self.dataManager getDataForPart:self.partNumber].length) );
+    
+    /*
+     // 支持后台上传
+     NSData *data = [self.dataManager getDataForPart:self.partNumber];
+     NSString *filePath = [self.dataManager writeData:data fileName:@"video"];
+     
+     [self.ufClient startMultipartUploadWithKeyName:self.dataManager.multiPartInfo.key mimeType:@"video/quicktime" uploadId:self.dataManager.multiPartInfo.uploadId partIndex:self.partNumber dataLength: [data length] filePath:filePath progress:^(NSProgress * _Nonnull progress) {
+         dispatch_async(dispatch_get_main_queue(), ^{
+             [weakself.progress setProgress:progress.fractionCompleted animated:YES];
+         });
+     } uploadHandler:^(UFError * _Nullable ufError, UFUploadResponse * _Nullable ufUploadResponse) {
+         if (!ufError) {
+             weakself.bUploaded = YES;
+             weakself.btnUpload.enabled = NO;
+             [self.dataManager addEtag:ufUploadResponse.etag partNumber:ufUploadResponse.partNumber];
+            // 上传成功，需要清理本地存储的临时文件
+             return;
+         }
+         dispatch_async(dispatch_get_main_queue(), ^{
+             weakself.progress.progressTintColor = [UIColor redColor];
+         });
+     }];
+     */
+    
     [self.ufClient startMultipartUploadWithKeyName:self.dataManager.multiPartInfo.key mimeType:@"video/quicktime" uploadId:self.dataManager.multiPartInfo.uploadId partIndex:self.partNumber fileData:[self.dataManager getDataForPart:self.partNumber] progress:^(NSProgress * _Nonnull progress) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakself.progress setProgress:progress.fractionCompleted animated:YES];

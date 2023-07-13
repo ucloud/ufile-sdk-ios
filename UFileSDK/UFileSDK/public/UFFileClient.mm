@@ -369,6 +369,54 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
 }
 
 - (void)uploadWithKeyName:(NSString * _Nonnull)keyName
+                 fileData:(NSData * _Nonnull)data
+                 mimeType:(NSString * _Nullable)mimeType
+                 progress:(UFProgress)uploadProgress
+            uploadHandler:(UFUploadHandler _Nonnull)handler
+{
+    if ([UFFileClient checkParametersAndNotify:keyName input:data isCheck:YES handler:handler]) {
+        return;
+    }
+    mimeType = mime(mimeType);
+    NSString *contentMD5  = [UFTools convertDataToMD5:data];
+    id signature = [self.ufConfig signatureForFileOperationWithHttpMethod:@"PUT" key:keyName md5Data:contentMD5 contentType:mimeType callBack:nil];
+    if ([signature isKindOfClass:[UFError class]]) {
+        handler((UFError *)signature,nil);
+        return;
+    }
+    NSString *strAuth = (NSString *)signature;
+    NSString *urlString = [NSString stringWithFormat:@"%@/%@", self.ufConfig.baseURL, keyName];
+    NSMutableURLRequest *request = NULL;
+    @try {
+        NSDictionary * option = @{kUFileSDKOptionFileType:mimeType, kUFileSDKOptionMD5: contentMD5,kUFileSDKOptionTimeoutInterval:[NSNumber numberWithFloat:10.0]};
+        NSArray *headers = [self constructHeadersForType:UFHttpResponseTypeUpload author:strAuth options:option length:[data length]];
+        request = [[NSMutableURLRequest alloc] init];
+        request.HTTPMethod = @"PUT";
+        request.URL = [NSURL URLWithString:urlString];
+        for (NSArray *item in headers) {
+            [request addValue:item[1] forHTTPHeaderField:item[0]];
+        }
+        [request setHTTPBody:data];
+        [request addValue:[NSString stringWithFormat:@"UFile iOS/%@",KUFileSDKVersion] forHTTPHeaderField:@"User-Agent"];
+    } @catch (NSException *exception) {
+        log4cplus_warn("UFSDK_Upload", "upload error , error info %s\n",[exception.description UTF8String]);
+        handler([UFError sysErrorWithInvalidElements:@"construct request error"],nil);
+        return;
+    }
+    NSURLSessionUploadTask *task = [self.localSessionManager uploadTaskWithRequest:request fromFile:nil progress:uploadProgress completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        if ([self processingHttpResponseError:error response:response body:responseObject handler:handler]) {
+            return;
+        }
+        UFUploadResponse *uploadResponse = [self constructHttpResponseObject:UFHttpResponseTypeUpload response:response body:responseObject filePath:nil handler:handler];
+        if (uploadResponse) {
+            log4cplus_info("UFSDK_Upload", "upload succ , server response info-->%s\n",[uploadResponse.description UTF8String]);
+            handler(nil,uploadResponse);
+        }
+    }];
+    [task resume];
+}
+
+- (void)uploadWithKeyName:(NSString * _Nonnull)keyName
                  filePath:(NSString * _Nonnull)filePath
                  fileData:(NSData * _Nonnull)data
                  mimeType:(NSString * _Nullable)mimeType
@@ -485,17 +533,23 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
     }
     NSString *strAuth = (NSString *)signature;
     NSURL *url = [self fileUrl:keyName params:@{@"uploads": @""}];
-    UFMutableURLRequest *request = NULL;
+    NSMutableURLRequest *request = NULL;
     try {
         NSArray* headers = @[@[@"Authorization", strAuth],@[@"Content-Type", mimeType]];
-        request = [[UFMutableURLRequest alloc] initUFMutableURLRequestWithURL:url httpMethod:@"POST" timeout:self.timeoutIntervalForRequest headers:headers httpBody:nil];
+        request = [[NSMutableURLRequest alloc] init];
+        request.HTTPMethod = @"POST";
+        request.URL = url;
+        for (NSArray *item in headers) {
+            [request addValue:item[1] forHTTPHeaderField:item[0]];
+        }
+        [request addValue:[NSString stringWithFormat:@"UFile iOS/%@",KUFileSDKVersion] forHTTPHeaderField:@"User-Agent"];
     } catch (NSException *exception) {
         log4cplus_warn("UFSDK_MultipartUpload", "%s , error info %s\n",__func__,[exception.description UTF8String]);
         handler([UFError sysErrorWithInvalidElements:@"construct request error"],nil);
         return;
     }
     
-    NSURLSessionDataTask *dataTask = [self.localSessionManager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+    NSURLSessionDataTask *dataTask = [self.localSessionManager supportBackgroundDataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
         if ([self processingHttpResponseError:error response:response body:responseObject handler:handler]) {
             return;
         }
@@ -559,6 +613,64 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
     [dataTask resume];
 }
 
+- (void)startMultipartUploadWithKeyName:(NSString * _Nonnull)keyName
+                               mimeType:(NSString * _Nullable)mimeType
+                               uploadId:(NSString * _Nonnull)upId
+                              partIndex:(NSInteger)partIndex
+                             dataLength:(NSUInteger)dataLength
+                               filePath:(NSString * _Nonnull)filePath
+                               progress:(UFProgress _Nonnull)uploadProgress
+                          uploadHandler:(UFUploadHandler _Nonnull)handler
+{
+    if ([UFFileClient checkParametersAndNotify:keyName input:nil isCheck:NO handler:handler]) {
+        return;
+    }
+    if (!upId) {
+        log4cplus_warn("UFSDK_MultipartUpload", "%s, uploadId or file data is null..\n",__func__);
+        handler([UFError sysErrorWithInvalidArgument:@"no uploadId"],nil);
+        return;
+    }
+    mimeType = mime(mimeType);
+    id signature = [self.ufConfig signatureForFileOperationWithHttpMethod:@"PUT" key:keyName md5Data:@"" contentType:mimeType callBack:nil];
+    if ([signature isKindOfClass:[UFError class]]) {
+        handler((UFError *)signature,nil);
+        return;
+    }
+    NSString *strAuth = (NSString *)signature;
+    NSURL *url = [self fileUrl:keyName params:@{@"uploadId":upId, @"partNumber":[@(partIndex) stringValue]}];
+    NSMutableURLRequest *request = NULL;
+    try {
+        NSArray * headers = @[
+                              @[@"Authorization",strAuth],
+                              @[@"Content-Length",[NSString stringWithFormat:@"%lu",(unsigned long)dataLength]],
+                              @[@"Content-Type", mimeType]
+                              ];
+        request = [[NSMutableURLRequest alloc] init];
+        request.HTTPMethod = @"PUT";
+        request.URL = url;
+        for (NSArray *item in headers) {
+            [request addValue:item[1] forHTTPHeaderField:item[0]];
+        }
+        [request addValue:[NSString stringWithFormat:@"UFile iOS/%@",KUFileSDKVersion] forHTTPHeaderField:@"User-Agent"];
+    } catch (NSException *exception) {
+        log4cplus_warn("UFSDK_MultipartUpload", "%s , error info %s\n",__func__,[exception.description UTF8String]);
+        handler([UFError sysErrorWithInvalidElements:@"construct request error"],nil);
+        return;
+    }
+    
+    NSURLSessionUploadTask *task = [self.localSessionManager uploadTaskWithRequest:request fromFile:[NSURL fileURLWithPath:filePath] progress:uploadProgress completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        if ([self processingHttpResponseError:error response:response body:responseObject handler:handler]) {
+            return;
+        }
+        UFUploadResponse *uploadResponse = [self constructHttpResponseObject:UFHttpResponseTypeUpload response:response body:responseObject filePath:nil handler:handler];
+        if (uploadResponse) {
+            log4cplus_info("UFSDK_MultipartUpload", "start multipart upload succ , server response info-->%s\n",[uploadResponse.description UTF8String]);
+            handler(nil,uploadResponse);
+        }
+    }];
+    [task resume];
+}
+
 - (void)multipartUploadAbortWithKeyName:(NSString * _Nonnull)keyName
                                mimeType:(NSString * _Nullable)mimeType
                                uploadId:(NSString * _Nonnull)upId
@@ -575,20 +687,26 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
     }
     NSString *strAuth = (NSString *)signature;
     NSURL *url = [self fileUrl:keyName params:@{@"uploadId":upId}];
-    UFMutableURLRequest *request = NULL;
+    NSMutableURLRequest *request = NULL;
     try {
         NSArray * headers = @[
                               @[@"Authorization",strAuth],
                               @[@"Content-Type", mimeType]
                               ];
-        request = [[UFMutableURLRequest alloc] initUFMutableURLRequestWithURL:url httpMethod:@"DELETE" timeout:self.timeoutIntervalForRequest headers:headers httpBody:nil];
+        request = [[NSMutableURLRequest alloc] init];
+        request.HTTPMethod = @"DELETE";
+        request.URL = url;
+        for (NSArray *item in headers) {
+            [request addValue:item[1] forHTTPHeaderField:item[0]];
+        }
+        [request addValue:[NSString stringWithFormat:@"UFile iOS/%@",KUFileSDKVersion] forHTTPHeaderField:@"User-Agent"];
     } catch (NSException *exception) {
         log4cplus_warn("UFSDK_MultipartUpload", "%s , error info %s\n",__func__,[exception.description UTF8String]);
         handler([UFError sysErrorWithInvalidElements:@"construct request error"],nil);
         return;
     }
     
-    NSURLSessionDataTask *dataTask = [self.localSessionManager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+    NSURLSessionDataTask *dataTask = [self.localSessionManager supportBackgroundDataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
         if ([self processingHttpResponseError:error response:response body:responseObject handler:handler]) {
             return;
         }
@@ -624,18 +742,25 @@ NSString * UFilePercentEscapedStringFromString(NSString *string) {
     NSData *body = [[etags componentsJoinedByString:@","] dataUsingEncoding:NSUTF8StringEncoding];
     NSDictionary *paramDict = newKeyName == NULL ? @{@"uploadId":upId} : @{@"uploadId":upId, @"newKey":newKeyName};
     NSURL *url = [self fileUrl:keyName params:paramDict];
-    UFMutableURLRequest *request = NULL;
+    NSMutableURLRequest *request = NULL;
     try {
         NSArray * headers = @[@[@"Authorization", strAuth],
                               @[@"Content-type", mimeType],
                               @[@"Content-Length", [NSString stringWithFormat:@"%lu", (unsigned long)body.length]]];
-        request = [[UFMutableURLRequest alloc] initUFMutableURLRequestWithURL:url httpMethod:@"POST" timeout:self.timeoutIntervalForRequest headers:headers httpBody:body];
+        request = [[NSMutableURLRequest alloc] init];
+        request.HTTPMethod = @"POST";
+        request.URL = url;
+        for (NSArray *item in headers) {
+            [request addValue:item[1] forHTTPHeaderField:item[0]];
+        }
+        [request setHTTPBody:body];
+        [request addValue:[NSString stringWithFormat:@"UFile iOS/%@",KUFileSDKVersion] forHTTPHeaderField:@"User-Agent"];
     } catch (NSException *exception) {
         log4cplus_warn("UFSDK_MultipartUpload", "%s , error info %s\n",__func__,[exception.description UTF8String]);
         handler([UFError sysErrorWithInvalidElements:@"construct request error"],nil);
         return;
     }
-    NSURLSessionDataTask *dataTask = [self.localSessionManager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+    NSURLSessionDataTask *dataTask = [self.localSessionManager supportBackgroundDataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
         if ([self processingHttpResponseError:error response:response body:responseObject handler:handler]) {
             return;
         }

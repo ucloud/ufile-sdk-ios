@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)resetTableData;
 
 - (NSData *)getDataForPart:(NSInteger)partNumber;
+- (NSString *)writeData:(NSData *)data fileName:(NSString *)fileName;
 
 - (void)addEtag:(NSString *)etag partNumber:(NSInteger)partNumber;
 @end
