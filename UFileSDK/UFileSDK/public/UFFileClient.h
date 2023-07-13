@@ -138,6 +138,28 @@ NS_ASSUME_NONNULL_BEGIN
                           uploadHandler:(UFUploadHandler _Nonnull)handler;
 
 /**
+ @brief 开始分片上传（支持后台上传）
+ @discussion 开始分片上传。用于上传每片文件数据
+
+ @param keyName  文件的key，即你的文件的名称
+ @param mimeType 文件的mime类型，如果为空，默认就是二进制流 "application/octet-stream"; 如果不为空，就按照用户输入的mime类型
+ @param upId 本次分片上传的id
+ @param partIndex 片索引，即第几片
+ @param dataLength 文件大小
+ @param filePath 文件路径
+ @param uploadProgress 上传进度
+ @param handler 一个 `UFUploadHandler` 的block，用于处理开始分片上传的结果
+ */
+- (void)startMultipartUploadWithKeyName:(NSString * _Nonnull)keyName
+                               mimeType:(NSString * _Nullable)mimeType
+                               uploadId:(NSString * _Nonnull)upId
+                              partIndex:(NSInteger)partIndex
+                             dataLength:(NSUInteger)dataLength
+                               filePath:(NSString * _Nonnull)filePath
+                               progress:(UFProgress _Nonnull)uploadProgress
+                          uploadHandler:(UFUploadHandler _Nonnull)handler;
+
+/**
  @brief 取消上传
 
  @param keyName 文件的key，即你的文件的名称

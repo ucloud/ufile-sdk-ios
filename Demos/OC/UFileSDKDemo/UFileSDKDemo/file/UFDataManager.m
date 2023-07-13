@@ -61,6 +61,28 @@
     return [self.fileData subdataWithRange:NSMakeRange(loc, length)];
 }
 
+- (NSString *)writeData:(NSData *)data fileName:(NSString *)fileName {
+    NSString *tempDirectory = NSTemporaryDirectory();
+    NSString *tempDataDirectory = [tempDirectory stringByAppendingPathComponent:@"tempData"];
+    // 创建文件夹
+    NSError *error;
+    NSString *filePath;
+    BOOL success = [[NSFileManager defaultManager] createDirectoryAtPath:tempDataDirectory
+                                             withIntermediateDirectories:YES
+                                                              attributes:nil
+                                                                   error:&error];
+    if (success) {
+        // 创建文件路径
+        filePath = [tempDataDirectory stringByAppendingPathComponent:fileName];
+        // 将数据写入文件
+        success = [data writeToFile:filePath options:NSDataWritingAtomic error:&error];
+        if (success) {
+            return filePath;
+        }
+    }
+    return nil;
+}
+
 - (void)addEtag:(NSString *)etag partNumber:(NSInteger)partNumber
 {
     [self.etags setObject:etag forKey:[NSString stringWithFormat:@"%ld",partNumber]];

@@ -290,7 +290,8 @@ typedef NSURL  * (^UFileDestinationURL)(NSURL *targetPath, NSURLResponse *respon
                                                     delegate:self
                                                delegateQueue:self.operationQueue];
     
-    NSURLSessionConfiguration *backgroundSessionConfig = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:UFTools.appBundleIdentifier];
+    NSString *bgSessionIdentifier = [NSString stringWithFormat:@"%@.UFileBGSessionIdentifier", UFTools.appBundleIdentifier];
+    NSURLSessionConfiguration *backgroundSessionConfig = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:bgSessionIdentifier];
     backgroundSessionConfig.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
     _backgroundSession = [NSURLSession sessionWithConfiguration:backgroundSessionConfig
                                                                delegate:self
@@ -355,6 +356,20 @@ typedef NSURL  * (^UFileDestinationURL)(NSURL *targetPath, NSURLResponse *respon
     __block NSURLSessionDataTask *dataTask = nil;
     url_session_manager_create_task_safely(^{
         dataTask = [self.defaultSession dataTaskWithRequest:request];
+//        NSLog(@"%@", dataTask);
+    });
+    [self addDelegateForDataTask:dataTask uploadProgress:uploadProgressBlock downloadProgress:downloadProgressBlock completionHandler:completionHandler];
+    
+    return dataTask;
+}
+
+- (NSURLSessionDataTask *)supportBackgroundDataTaskWithRequest:(NSURLRequest *)request
+                                                uploadProgress:(nullable void (^)(NSProgress *uploadProgress)) uploadProgressBlock
+                                              downloadProgress:(nullable void (^)(NSProgress *downloadProgress)) downloadProgressBlock
+                                             completionHandler:(nullable void (^)(NSURLResponse *response, id _Nullable responseObject,  NSError * _Nullable error))completionHandler {
+    __block NSURLSessionDataTask *dataTask = nil;
+    url_session_manager_create_task_safely(^{
+        dataTask = [self.backgroundSession dataTaskWithRequest:request];
 //        NSLog(@"%@", dataTask);
     });
     [self addDelegateForDataTask:dataTask uploadProgress:uploadProgressBlock downloadProgress:downloadProgressBlock completionHandler:completionHandler];

@@ -36,6 +36,11 @@ NS_ASSUME_NONNULL_BEGIN
                              downloadProgress:(nullable void (^)(NSProgress *downloadProgress)) downloadProgressBlock
                             completionHandler:(nullable void (^)(NSURLResponse *response, id _Nullable responseObject,  NSError * _Nullable error))completionHandler;
 
+- (NSURLSessionDataTask *)supportBackgroundDataTaskWithRequest:(NSURLRequest *)request
+                                                uploadProgress:(nullable void (^)(NSProgress *uploadProgress)) uploadProgressBlock
+                                              downloadProgress:(nullable void (^)(NSProgress *downloadProgress)) downloadProgressBlock
+                                             completionHandler:(nullable void (^)(NSURLResponse *response, id _Nullable responseObject,  NSError * _Nullable error))completionHandler;
+
 - (NSURLSessionDownloadTask *)downloadTaskWithRequest:(NSURLRequest *)request
                                           destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
                                              progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock
