@@ -13,7 +13,7 @@ class FileDeleteQueryVC: UIViewController {
     @IBOutlet weak var fileNameTF:UITextField!
     @IBOutlet weak var resTV:UITextView!
     
-    var fileClient:UFFileClient = UFFileClient()
+    var fileClient:UFFileClient!
     
     override func viewDidLoad() {
         super.viewDidLoad()

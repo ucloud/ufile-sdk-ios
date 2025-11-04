@@ -17,6 +17,7 @@ class SettingVC: UIViewController {
     @IBOutlet weak var versionLabel:UILabel!
     @IBOutlet weak var fOptEncryptServerTV:UITextView!
     @IBOutlet weak var fAddressEncryptServerTV:UITextView!
+    @IBOutlet weak var customDomainTV:UITextView!
     
     
     override func viewDidLoad()
@@ -64,13 +65,15 @@ class SettingVC: UIViewController {
         bucketTF.text = DataTools.getStrData(key: KBucketName)
         fOptEncryptServerTV.text = DataTools.getStrData(key: KFileOperateEncryptServer)
         fAddressEncryptServerTV.text = DataTools.getStrData(key: KFileAddressEncryptServer)
+        customDomainTV.text = DataTools.getStrData(key: KCustomDomain)
     }
     
     func storeData() -> Void
     {
         let inputDict:[String:Any] = [KBucketPublicKey:self.bucketPublicKeyTV,KBucketPrivateKey:self.bucketPrivateKeyTV,
                                       KProfixSuffix:self.proxySuffixTV,KBucketName:self.bucketTF,
-                                      KFileOperateEncryptServer:self.fOptEncryptServerTV,KFileAddressEncryptServer:self.fAddressEncryptServerTV]
+                                      KFileOperateEncryptServer:self.fOptEncryptServerTV,KFileAddressEncryptServer:self.fAddressEncryptServerTV,
+                                      KCustomDomain:self.customDomainTV]
         let keys = inputDict.keys;
         for key in keys {
             if inputDict[key] is UITextField {
@@ -113,7 +116,7 @@ class SettingVC: UIViewController {
     
 
     func hideKeyBoard() -> Void {
-        let tvs:[UITextView] = [self.bucketPublicKeyTV,self.bucketPrivateKeyTV,self.proxySuffixTV,self.fOptEncryptServerTV,self.fAddressEncryptServerTV];
+        let tvs:[UITextView] = [self.bucketPublicKeyTV,self.bucketPrivateKeyTV,self.proxySuffixTV,self.fOptEncryptServerTV,self.fAddressEncryptServerTV,self.customDomainTV];
         for tv in tvs.enumerated() {
             if tv.element.isFirstResponder{
                 tv.element.resignFirstResponder();

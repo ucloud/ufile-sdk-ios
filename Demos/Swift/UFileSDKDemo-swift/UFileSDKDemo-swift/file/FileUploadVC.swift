@@ -10,7 +10,7 @@ import UIKit
 
 class FileUploadVC: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate {
 
-    var fileClient:UFFileClient = UFFileClient()
+    var fileClient:UFFileClient!
     var imagePickerVC:UIImagePickerController!
 
     @IBOutlet weak var resTV: UITextView!

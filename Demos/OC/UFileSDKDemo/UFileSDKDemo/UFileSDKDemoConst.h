@@ -16,6 +16,7 @@
 #define KFileOperateEncryptServer   @"FileOperateEncryptServer"
 #define KFileAddressEncryptServer   @"FileAddressEncryptServer"
 #define KProfixSuffix               @"ProfixSuffix"
+#define KCustomDomain               @"CustomDomain"
 
 
 #define KUFUserDefaults [NSUserDefaults standardUserDefaults]

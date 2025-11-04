@@ -20,16 +20,33 @@ class FileManagerVC: UIViewController {
         let proxySuffix = DataTools.getStrData(key: KProfixSuffix)
         let fileOperateEncryptServer = DataTools.getStrData(key: KFileOperateEncryptServer)
         let fileAddressEncryptServer = DataTools.getStrData(key: KFileAddressEncryptServer)
+        let customDomain = DataTools.getStrData(key: KCustomDomain)
 
-        if (bucketPublicKey == nil || bucketName == nil || proxySuffix == nil)  {
-            print("bucket config does not complete , please check..")
+        let trimmedCustomDomain = customDomain?.trimmingCharacters(in: .whitespaces)
+        let trimmedProxySuffix = proxySuffix?.trimmingCharacters(in: .whitespaces)
+        let hasCustomDomain = trimmedCustomDomain != nil && !trimmedCustomDomain!.isEmpty
+        let hasProxySuffix = trimmedProxySuffix != nil && !trimmedProxySuffix!.isEmpty
+
+        guard let publicKey = bucketPublicKey, let bucket = bucketName else {
+            print("bucket config does not complete, please check.. (need bucketPublicKey and bucketName)")
             return
         }
         
-        let ufConfig = UFConfig.instanceConfig(withPrivateToken: bucketPrivateKey, publicToken: bucketPublicKey!, bucket: bucketName!, fileOperateEncryptServer: fileOperateEncryptServer, fileAddressEncryptServer: fileAddressEncryptServer, proxySuffix: proxySuffix!, isHttps:true);
+        if (!hasCustomDomain && !hasProxySuffix) {
+            print("bucket config does not complete, please check.. (need either customDomain or proxySuffix)")
+            return
+        }
+        
 
-        fileClient = UFFileClient.instanceFileClient(with: ufConfig)
+        let finalProxySuffix = hasProxySuffix ? trimmedProxySuffix : nil
+        let finalCustomDomain = hasCustomDomain ? trimmedCustomDomain : nil
+        
+        let ufConfig = UFConfig.instanceConfig(withPrivateToken: bucketPrivateKey, publicToken: publicKey, bucket: bucket, fileOperateEncryptServer: fileOperateEncryptServer, fileAddressEncryptServer: fileAddressEncryptServer, proxySuffix: finalProxySuffix, customDomain: finalCustomDomain, isHttps:true);
 
+        if ufConfig != nil {
+            fileClient = UFFileClient.instanceFileClient(with: ufConfig)
+        }
+ 
         // Do any additional setup after loading the view.
     }
     
@@ -38,29 +55,33 @@ class FileManagerVC: UIViewController {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
         
-        if (segue.identifier?.elementsEqual("uploadFile"))! {
-            let uploadVC:FileUploadVC = segue.destination as! FileUploadVC
-            uploadVC.fileClient = fileClient!
+        guard let client = fileClient else {
+            return
         }
-        else if (segue.identifier?.elementsEqual("downloadFile"))!{
-            let downloadVC:FileDownloadVC = segue.destination as! FileDownloadVC
-            downloadVC.fileClient = fileClient!
+        
+        if segue.identifier == "uploadFile" {
+            let uploadVC = segue.destination as! FileUploadVC
+            uploadVC.fileClient = client
         }
-        else if (segue.identifier?.elementsEqual("deleteAndQueryFile"))!{
-            let deleteQueryVC:FileDeleteQueryVC = segue.destination as! FileDeleteQueryVC
-            deleteQueryVC.fileClient = fileClient!
+        else if segue.identifier == "downloadFile" {
+            let downloadVC = segue.destination as! FileDownloadVC
+            downloadVC.fileClient = client
         }
-        else if (segue.identifier?.elementsEqual("multipartUploadFile"))!{
-            let muVC:FileMutipartUploadVC = segue.destination as! FileMutipartUploadVC
-            muVC.fileClient = fileClient!
+        else if segue.identifier == "deleteAndQueryFile" {
+            let deleteQueryVC = segue.destination as! FileDeleteQueryVC
+            deleteQueryVC.fileClient = client
         }
-        else if (segue.identifier?.elementsEqual("FileList"))!{
-            let fileListVC:FileListVC = segue.destination as! FileListVC
-            fileListVC.fileClient = fileClient!
+        else if segue.identifier == "multipartUploadFile" {
+            let muVC = segue.destination as! FileMutipartUploadVC
+            muVC.fileClient = client
         }
-        else if (segue.identifier?.elementsEqual("HeadFile"))!{
-            let headFileVC:FileHeadFileVC = segue.destination as! FileHeadFileVC
-            headFileVC.fileClient = fileClient!
+        else if segue.identifier == "FileList" {
+            let fileListVC = segue.destination as! FileListVC
+            fileListVC.fileClient = client
+        }
+        else if segue.identifier == "HeadFile" {
+            let headFileVC = segue.destination as! FileHeadFileVC
+            headFileVC.fileClient = client
         }
         
     }

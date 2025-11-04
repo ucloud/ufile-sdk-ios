@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  公有token
  */
-@property (nonatomic,readonly) NSString *publicToken;
+@property (nonatomic,readonly, nullable) NSString *publicToken;
 
 /**
  bucket
@@ -48,11 +48,17 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic,readonly) NSString *proxySuffix;
 
+/**
+ 自定义域名，如果设置了自定义域名，将优先使用自定义域名
+ eg: https://cdn.example.com 或 https://files.mydomain.com
+ */
+@property (nonatomic,readonly, nullable) NSString *customDomain;
 
 /**
  请求服务地址，内部使用
  */
-@property (nonatomic,readonly) NSURL *baseURL;
+@property (nonatomic,readonly) NSURL *ba
+
 
 /**
  是否是Https请求
@@ -74,16 +80,18 @@ NS_ASSUME_NONNULL_BEGIN
  @param bucket       bucket
  @param fileOperateEncryptServer 文件操作的签名服务器地址,如果该字段为空，则进行本地签名
  @param fileAddressEncryptServer 获取文件地址时的签名服务器，如果该字段为空，则进行本地签名
- @param proxySuffix   默认域名后缀 eg: ufile.cloud.cn
+ @param proxySuffix   默认域名后缀 eg: ufile.cloud.cn（如果提供了customDomain，则不需要；否则必需）
+ @param customDomain 自定义域名，完整URL格式，如：https://cdn.example.com 或 http://files.mydomain.com（可选，如果提供则不需要proxySuffix，走自定义域名逻辑）
  @param isHttps   是否使用https请求
  @return 返回一个 `UFAuthor` 实例
  */
 + (instancetype)instanceConfigWithPrivateToken:(NSString * _Nullable)privateToken
-                               publicToken:(NSString * _Nonnull)publicToken
+                               publicToken:(NSString * _Nullable)publicToken
                                     bucket:(NSString * _Nonnull)bucket
                              fileOperateEncryptServer:(NSString * _Nullable)fileOperateEncryptServer
                           fileAddressEncryptServer:(NSString * _Nullable)fileAddressEncryptServer
-                                   proxySuffix:(NSString * _Nonnull)proxySuffix
+                                   proxySuffix:(NSString * _Nullable)proxySuffix
+                                  customDomain:(NSString * _Nullable)customDomain
                                        isHttps:(BOOL)isHttps;
 
 /**

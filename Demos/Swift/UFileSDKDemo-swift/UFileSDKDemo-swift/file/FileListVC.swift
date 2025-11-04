@@ -15,7 +15,7 @@ class FileListVC: UIViewController {
     @IBOutlet var limitTF:UITextField!
     @IBOutlet var resTV:UITextView!
     
-    var fileClient:UFFileClient = UFFileClient()
+    var fileClient:UFFileClient!
     
     override func viewDidLoad() {
         super.viewDidLoad()
