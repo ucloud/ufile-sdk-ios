@@ -57,7 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  请求服务地址，内部使用
  */
-@property (nonatomic,readonly) NSURL *ba
+@property (nonatomic,readonly) NSURL *baseURL;
 
 
 /**
