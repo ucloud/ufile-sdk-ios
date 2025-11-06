@@ -31,12 +31,15 @@
         NSString *proxySuffix = [DataTools getStrData:KProfixSuffix];
         NSString *fileOperateEncryptServer = [DataTools getStrData:KFileOperateEncryptServer];
         NSString *fileAddressEncryptServer = [DataTools getStrData:KFileAddressEncryptServer];
+        NSString *customDomain = [DataTools getStrData:KCustomDomain];
+
+        BOOL hasCustomDomain = customDomain && customDomain.length > 0 && ![customDomain isEqualToString:@" "];
+        BOOL hasProxySuffix = proxySuffix && proxySuffix.length > 0 && ![proxySuffix isEqualToString:@" "];
         
-        if (!bucketPublicKey || !bucketName  || !proxySuffix) {
-            NSLog(@"bucket config does not complete , please check..");
+        if (!bucketPublicKey || !bucketName || (!hasCustomDomain && !hasProxySuffix)) {
             return nil;
         }
-        UFConfig *ufConfig = [UFConfig instanceConfigWithPrivateToken:bucketPrivateKey publicToken:bucketPublicKey bucket:bucketName fileOperateEncryptServer:fileOperateEncryptServer fileAddressEncryptServer:fileAddressEncryptServer proxySuffix:proxySuffix isHttps:YES];
+        UFConfig *ufConfig = [UFConfig instanceConfigWithPrivateToken:bucketPrivateKey publicToken:bucketPublicKey bucket:bucketName fileOperateEncryptServer:fileOperateEncryptServer fileAddressEncryptServer:fileAddressEncryptServer proxySuffix:proxySuffix customDomain:customDomain isHttps:YES];
         _fileClient = [UFFileClient instanceFileClientWithConfig:ufConfig];
     }
     return _fileClient;

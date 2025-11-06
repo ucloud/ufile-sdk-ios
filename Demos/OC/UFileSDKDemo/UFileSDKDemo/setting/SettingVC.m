@@ -17,6 +17,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *bucketTF;
 @property (weak, nonatomic) IBOutlet UITextView *fOptEncryptServerTV;
 @property (weak, nonatomic) IBOutlet UITextView *fAddressEncryptServerTV;
+@property (weak, nonatomic) IBOutlet UITextView *customDomainTV;
 
 
 @property (weak, nonatomic) IBOutlet UILabel *versionLabel;
@@ -72,11 +73,12 @@
     self.bucketTF.text          =    [DataTools getStrData:KBucketName];
     self.fOptEncryptServerTV.text =  [DataTools getStrData:KFileOperateEncryptServer];
     self.fAddressEncryptServerTV.text = [DataTools getStrData:KFileAddressEncryptServer];
+    self.customDomainTV.text    =    [DataTools getStrData:KCustomDomain];
 }
 
 - (void)storeData
 {
-    NSDictionary *inputDict = @{KBucketPublicKey:self.bucketPublicKeyTV,KBucketPrivateKey:self.bucketPrivateKeyTV,KProfixSuffix:self.proxySuffixTV,KBucketName:self.bucketTF,KFileOperateEncryptServer:self.fOptEncryptServerTV,KFileAddressEncryptServer:self.fAddressEncryptServerTV};
+    NSDictionary *inputDict = @{KBucketPublicKey:self.bucketPublicKeyTV,KBucketPrivateKey:self.bucketPrivateKeyTV,KProfixSuffix:self.proxySuffixTV,KBucketName:self.bucketTF,KFileOperateEncryptServer:self.fOptEncryptServerTV,KFileAddressEncryptServer:self.fAddressEncryptServerTV,KCustomDomain:self.customDomainTV};
     NSArray *keys = inputDict.allKeys;
     for (NSUInteger i = 0; i < keys.count; i++) {
         if([[inputDict objectForKey:keys[i]] isKindOfClass:[UITextField class]])
@@ -104,7 +106,7 @@
 - (void)hideKeyBoard
 {
     
-    NSArray *inputTextAire = @[self.bucketPublicKeyTV,self.bucketPrivateKeyTV,self.proxySuffixTV,self.bucketTF,self.fOptEncryptServerTV,self.fAddressEncryptServerTV];
+    NSArray *inputTextAire = @[self.bucketPublicKeyTV,self.bucketPrivateKeyTV,self.proxySuffixTV,self.bucketTF,self.fOptEncryptServerTV,self.fAddressEncryptServerTV,self.customDomainTV];
     for (id input in inputTextAire) {
         if ([input isFirstResponder]) {
             [input resignFirstResponder];

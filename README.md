@@ -92,10 +92,13 @@ pod 'UFileSDK'
 #import <UFileSDK/UFileSDK.h>
 
  // 使用本地签名，不推荐使用这种方式
-UFConfig *ufConfig = [UFConfig instanceConfigWithPrivateToken:@"bucket私钥" publicToken:@"bucket公钥" bucket:@"bucket名称" fileOperateEncryptServer:nil fileAddressEncryptServer:nil proxySuffix:@"域名后缀" isHttps:YES];
+UFConfig *ufConfig = [UFConfig instanceConfigWithPrivateToken:@"bucket私钥" publicToken:@"bucket公钥" bucket:@"bucket名称" fileOperateEncryptServer:nil fileAddressEncryptServer:nil proxySuffix:@"域名后缀" customDomain:nil isHttps:YES];
     
  // 使用服务器签名，推荐使用
-UFConfig *ufConfig = [UFConfig instanceConfigWithPrivateToken:nil publicToken:@"bucket公钥" bucket:@"bucket名称" fileOperateEncryptServer:@"文件操作签名服务器" fileAddressEncryptServer:@"获取文件URL的签名服务器" proxySuffix:@"域名后缀" isHttps:YES];
+UFConfig *ufConfig = [UFConfig instanceConfigWithPrivateToken:nil publicToken:@"bucket公钥" bucket:@"bucket名称" fileOperateEncryptServer:@"文件操作签名服务器" fileAddressEncryptServer:@"获取文件URL的签名服务器" proxySuffix:@"域名后缀" customDomain:nil isHttps:YES];
+ 
+ // 使用自定义域名（优先级高于默认域名）
+UFConfig *ufConfig = [UFConfig instanceConfigWithPrivateToken:@"bucket私钥" publicToken:@"bucket公钥" bucket:@"bucket名称" fileOperateEncryptServer:nil fileAddressEncryptServer:nil proxySuffix:nil customDomain:@"https://cdn.example.com" isHttps:YES];
 UFFileClient *fileClient =  [UFFileClient instanceFileClientWithConfig:ufConfig];
 
 ```

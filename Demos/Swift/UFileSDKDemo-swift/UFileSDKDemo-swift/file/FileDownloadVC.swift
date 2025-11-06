@@ -17,7 +17,7 @@ class FileDownloadVC: UIViewController {
     @IBOutlet weak var imgView:UIImageView!
     @IBOutlet weak var resTV:UITextView!
     
-    var fileClient:UFFileClient = UFFileClient()
+    var fileClient:UFFileClient!
     var strDownloadPath = ""
     
     override func viewDidLoad() {

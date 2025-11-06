@@ -17,7 +17,7 @@ class FileMutipartUploadVC: UIViewController,UITableViewDataSource {
     @IBOutlet weak var cancelBtn:UIButton!
     @IBOutlet weak var finishBtn:UIButton!
     
-    var fileClient:UFFileClient = UFFileClient()
+    var fileClient:UFFileClient!
     var dataManager:UFDataManager? = nil
     
     override func viewDidLoad() {

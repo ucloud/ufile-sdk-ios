@@ -14,5 +14,6 @@ let KProfixSuffix     =  "ProfixSuffix"
 let KBucketName       =  "BucketName"
 let KFileOperateEncryptServer = "FileOperateEncryptServer"
 let KFileAddressEncryptServer = "FileAddressEncryptServer"
+let KCustomDomain     =  "CustomDomain"
 
 let KUFUserDefaults   = UserDefaults.standard

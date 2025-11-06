@@ -350,11 +350,48 @@
                                     <constraint firstAttribute="height" constant="50" id="oN5-xi-h4x"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CuD-Om-123">
+                                <rect key="frame" x="0.0" y="401" width="375" height="50"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="自定义域名" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CuD-lbl-456">
+                                        <rect key="frame" x="5" y="6.5" width="42" height="37"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="42" id="CuD-lbl-w"/>
+                                            <constraint firstAttribute="height" constant="37" id="CuD-lbl-h"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="CuD-tv-789">
+                                        <rect key="frame" x="52" y="5" width="318" height="40"/>
+                                        <color key="backgroundColor" red="0.91372549020000005" green="1" blue="0.98431372549999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="CuD-tv-h1"/>
+                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="40" id="CuD-tv-h2"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="CuD-tv-789" secondAttribute="trailing" constant="5" id="CuD-c1"/>
+                                    <constraint firstItem="CuD-lbl-456" firstAttribute="centerY" secondItem="CuD-Om-123" secondAttribute="centerY" id="CuD-c2"/>
+                                    <constraint firstItem="CuD-tv-789" firstAttribute="leading" secondItem="CuD-lbl-456" secondAttribute="trailing" constant="5" id="CuD-c3"/>
+                                    <constraint firstItem="CuD-tv-789" firstAttribute="centerY" secondItem="CuD-Om-123" secondAttribute="centerY" id="CuD-c4"/>
+                                    <constraint firstItem="CuD-lbl-456" firstAttribute="leading" secondItem="CuD-Om-123" secondAttribute="leading" constant="5" id="CuD-c5"/>
+                                    <constraint firstAttribute="height" constant="50" id="CuD-c6"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="Wd5-CC-Dva" firstAttribute="leading" secondItem="TPC-r4-C3j" secondAttribute="leading" id="0Jv-7I-V8Y"/>
-                            <constraint firstItem="Wd5-CC-Dva" firstAttribute="top" secondItem="XhB-Sa-uak" secondAttribute="bottom" constant="2" id="0LM-kH-hfV"/>
+                            <constraint firstItem="Wd5-CC-Dva" firstAttribute="top" secondItem="CuD-Om-123" secondAttribute="bottom" constant="2" id="0LM-kH-hfV"/>
+                            <constraint firstItem="CuD-Om-123" firstAttribute="leading" secondItem="TPC-r4-C3j" secondAttribute="leading" id="CuD-lead"/>
+                            <constraint firstItem="CuD-Om-123" firstAttribute="trailing" secondItem="TPC-r4-C3j" secondAttribute="trailing" id="CuD-trail"/>
+                            <constraint firstItem="CuD-Om-123" firstAttribute="top" secondItem="XhB-Sa-uak" secondAttribute="bottom" constant="2" id="CuD-top"/>
                             <constraint firstItem="gUq-3i-uA6" firstAttribute="trailing" secondItem="TPC-r4-C3j" secondAttribute="trailing" id="1Uf-ar-8hF"/>
                             <constraint firstItem="gUq-3i-uA6" firstAttribute="trailing" secondItem="TPC-r4-C3j" secondAttribute="trailing" id="1du-xd-kpb"/>
                             <constraint firstItem="6H5-bT-rMH" firstAttribute="trailing" secondItem="TPC-r4-C3j" secondAttribute="trailing" id="4tN-S9-3y4"/>
@@ -402,6 +439,7 @@
                         <outlet property="fAddressEncryptServerTV" destination="Bbt-5A-EbB" id="QOM-5O-Deu"/>
                         <outlet property="fOptEncryptServerTV" destination="3k7-Es-1Ti" id="ctl-KU-XZG"/>
                         <outlet property="proxySuffixTV" destination="fEL-0F-DII" id="BGx-Rb-6NO"/>
+                        <outlet property="customDomainTV" destination="CuD-tv-789" id="CuD-outlet-cd"/>
                         <outlet property="versionLabel" destination="spx-b5-NHy" id="ceW-jq-tEq"/>
                     </connections>
                 </viewController>

@@ -18,12 +18,59 @@
           fileOperateEncryptServer:(NSString *)fileOperateEncryptServer
           fileAddressEncryptServer:(NSString *)fileAddressEncryptServer
                        proxySuffix:(NSString *)proxySuffix
+                      customDomain:(NSString *)customDomain
                                    isHttps:(BOOL)isHttps
 {
     self  = [super init];
     if (!self) {
         return nil;
     }
+
+    if (!bucket || [UFTools uf_isEmpty:bucket]) {
+        log4cplus_warn("UFileSDK", "UFConfig init error: bucket is required");
+        return nil;
+    }
+    
+    // 如果提供了自定义域名，则不需要 proxySuffix
+    if (customDomain && ![UFTools uf_isEmpty:customDomain]) {
+        // 使用自定义域名
+        NSString *trimmedDomain = [customDomain stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        
+        // 自动添加协议前缀（如果没有）
+        if (!([trimmedDomain hasPrefix:@"http://"] || [trimmedDomain hasPrefix:@"https://"])) {
+            log4cplus_info("UFileSDK", "customDomain没有指定协议，自动使用 %s://\n", isHttps ? "https" : "http");
+            trimmedDomain = [NSString stringWithFormat:@"%@://%@", isHttps ? @"https" : @"http", trimmedDomain];
+        }
+        
+        // 移除尾部斜杠（如果有）
+        if ([trimmedDomain hasSuffix:@"/"]) {
+            trimmedDomain = [trimmedDomain substringToIndex:trimmedDomain.length - 1];
+        }
+        
+        // 验证URL是否有效
+        NSURL *testURL = [NSURL URLWithString:trimmedDomain];
+        if (!testURL || !testURL.scheme || !testURL.host) {
+            log4cplus_warn("UFileSDK", "UFConfig init error: customDomain '%s' is not a valid URL\n", trimmedDomain.UTF8String);
+            return nil;
+        }
+        
+        log4cplus_info("UFileSDK", "使用自定义域名: %s\n", trimmedDomain.UTF8String);
+        _customDomain = trimmedDomain;
+        _baseURL = testURL;
+        _isHttps = [trimmedDomain hasPrefix:@"https://"];
+        _proxySuffix = @"";
+    } else {
+        if (!proxySuffix || [UFTools uf_isEmpty:proxySuffix]) {
+            log4cplus_warn("UFileSDK", "UFConfig init error: proxySuffix is required when not using custom domain");
+            return nil;
+        }
+        _customDomain = nil;
+        _proxySuffix = proxySuffix;
+        _isHttps = isHttps;
+        NSString *urlStr = [NSString stringWithFormat:@"%@://%@.%@", (isHttps ? @"https" : @"http"), bucket, proxySuffix];
+        _baseURL = [NSURL URLWithString: urlStr];
+    }
+    
     if (privateToken) {
         _privateToken = privateToken;
     }
@@ -39,34 +86,29 @@
     if (fileAddressEncryptServer) {
         _fileAddressEncryptServer = fileAddressEncryptServer;
     }
-    if (proxySuffix) {
-        _proxySuffix = proxySuffix;
-    }
-    _isHttps = isHttps;
-    /*
-    NSString *urlstr  = [NSString stringWithFormat:@"http://%@", self.proxySuffix];
-    NSArray *arr  = [urlstr componentsSeparatedByString:@"://"];
-    [NSString stringWithFormat:@"%@://%@.%@", arr[0], self.bucket, arr[1]];
-    */
-    NSString *urlStr = [NSString stringWithFormat:@"%@://%@.%@", (isHttps ? @"https" : @"http"), self.bucket, self.proxySuffix];
-    _baseURL = [NSURL URLWithString: urlStr];
+    
     return self;
 }
 
 + (instancetype)instanceConfigWithPrivateToken:(NSString * _Nullable)privateToken
-                                   publicToken:(NSString * _Nonnull)publicToken
+                                   publicToken:(NSString * _Nullable)publicToken
                                         bucket:(NSString * _Nonnull)bucket
                       fileOperateEncryptServer:(NSString * _Nullable)fileOperateEncryptServer
                       fileAddressEncryptServer:(NSString * _Nullable)fileAddressEncryptServer
-                                   proxySuffix:(NSString * _Nonnull)proxySuffix
+                                   proxySuffix:(NSString * _Nullable)proxySuffix
+                                  customDomain:(NSString * _Nullable)customDomain
                                        isHttps:(BOOL)isHttps
 {
-    return [[self alloc] initConfigWithPrivateToken:privateToken publicToken:publicToken bucket:bucket fileOperateEncryptServer:fileOperateEncryptServer fileAddressEncryptServer:fileAddressEncryptServer proxySuffix:proxySuffix isHttps:isHttps];
+    return [[self alloc] initConfigWithPrivateToken:privateToken publicToken:publicToken bucket:bucket fileOperateEncryptServer:fileOperateEncryptServer fileAddressEncryptServer:fileAddressEncryptServer proxySuffix:proxySuffix customDomain:customDomain isHttps:isHttps];
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"privateToken:%@ , publicToken:%@ , bucket:%@ , fileOperateEncryptServer:%@ , fileAddressEncryptServer:%@ , proxySuffix:%@ , baseURL:%@",self.privateToken,self.publicToken,self.bucket,self.fileOperateEncryptServer,self.fileAddressEncryptServer,self.proxySuffix,self.baseURL];
+    if (self.customDomain) {
+        return [NSString stringWithFormat:@"customDomain:%@ , publicToken:%@ , bucket:%@ , fileOperateEncryptServer:%@ , fileAddressEncryptServer:%@ , baseURL:%@",self.customDomain,self.publicToken,self.bucket,self.fileOperateEncryptServer,self.fileAddressEncryptServer,self.baseURL];
+    } else {
+        return [NSString stringWithFormat:@"privateToken:%@ , publicToken:%@ , bucket:%@ , fileOperateEncryptServer:%@ , fileAddressEncryptServer:%@ , proxySuffix:%@ , isHttps:%@ , baseURL:%@",self.privateToken,self.publicToken,self.bucket,self.fileOperateEncryptServer,self.fileAddressEncryptServer,self.proxySuffix,self.isHttps ? @"YES" : @"NO",self.baseURL];
+    }
 }
 
 - (id)signatureForFileOperationWithHttpMethod:(NSString *)httpMethod key:(NSString *)keyName md5Data:(NSString * __nullable)contentMd5 contentType:(NSString *)contentType  callBack:(NSDictionary * __nullable)policy

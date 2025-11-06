@@ -1263,6 +1263,40 @@
                                     <constraint firstAttribute="height" constant="50" id="zkl-qP-KKs"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SwD-Om-456">
+                                <rect key="frame" x="0.0" y="401" width="375" height="50"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="自定义域名" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SwD-lbl-789">
+                                        <rect key="frame" x="5" y="6.5" width="42" height="37"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="42" id="SwD-lbl-w"/>
+                                            <constraint firstAttribute="height" constant="37" id="SwD-lbl-h"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="SwD-tv-012">
+                                        <rect key="frame" x="52" y="5" width="318" height="40"/>
+                                        <color key="backgroundColor" red="0.91372549020000005" green="1" blue="0.98431372549999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="SwD-tv-h1"/>
+                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="40" id="SwD-tv-h2"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="SwD-tv-012" secondAttribute="trailing" constant="5" id="SwD-c1"/>
+                                    <constraint firstItem="SwD-lbl-789" firstAttribute="centerY" secondItem="SwD-Om-456" secondAttribute="centerY" id="SwD-c2"/>
+                                    <constraint firstItem="SwD-tv-012" firstAttribute="leading" secondItem="SwD-lbl-789" secondAttribute="trailing" constant="5" id="SwD-c3"/>
+                                    <constraint firstItem="SwD-tv-012" firstAttribute="centerY" secondItem="SwD-Om-456" secondAttribute="centerY" id="SwD-c4"/>
+                                    <constraint firstItem="SwD-lbl-789" firstAttribute="leading" secondItem="SwD-Om-456" secondAttribute="leading" constant="5" id="SwD-c5"/>
+                                    <constraint firstAttribute="height" constant="50" id="SwD-c6"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <constraints>
@@ -1278,6 +1312,9 @@
                             <constraint firstItem="lcE-iV-WJY" firstAttribute="top" secondItem="kFm-Jp-iAw" secondAttribute="bottom" constant="2" id="DX1-3g-2ti"/>
                             <constraint firstItem="kFm-Jp-iAw" firstAttribute="leading" secondItem="dpq-th-n3q" secondAttribute="leading" id="GWa-YU-nOx"/>
                             <constraint firstItem="JJV-Q2-z8B" firstAttribute="leading" secondItem="dpq-th-n3q" secondAttribute="leading" id="GcJ-ZN-wcu"/>
+                            <constraint firstItem="SwD-Om-456" firstAttribute="leading" secondItem="dpq-th-n3q" secondAttribute="leading" id="SwD-lead"/>
+                            <constraint firstItem="SwD-Om-456" firstAttribute="trailing" secondItem="dpq-th-n3q" secondAttribute="trailing" id="SwD-trail"/>
+                            <constraint firstItem="SwD-Om-456" firstAttribute="top" secondItem="QNF-8o-7ca" secondAttribute="bottom" constant="2" id="SwD-top"/>
                             <constraint firstItem="mIu-T4-OaT" firstAttribute="leading" secondItem="dpq-th-n3q" secondAttribute="leading" id="HPy-WU-evF"/>
                             <constraint firstItem="mIu-T4-OaT" firstAttribute="top" secondItem="UuZ-JM-9Id" secondAttribute="bottom" constant="20" id="LL2-Bx-EZP"/>
                             <constraint firstItem="UuZ-JM-9Id" firstAttribute="trailing" secondItem="dpq-th-n3q" secondAttribute="trailing" id="MFG-NG-oyN"/>
@@ -1291,7 +1328,7 @@
                             <constraint firstItem="Yvd-mv-uPm" firstAttribute="trailing" secondItem="dpq-th-n3q" secondAttribute="trailing" id="k6n-Q6-1fi"/>
                             <constraint firstItem="UuZ-JM-9Id" firstAttribute="leading" secondItem="dpq-th-n3q" secondAttribute="leading" id="l8t-tk-FdS"/>
                             <constraint firstItem="kFm-Jp-iAw" firstAttribute="trailing" secondItem="dpq-th-n3q" secondAttribute="trailing" id="oPh-K2-yRa"/>
-                            <constraint firstItem="JJV-Q2-z8B" firstAttribute="top" secondItem="QNF-8o-7ca" secondAttribute="bottom" constant="2" id="pm4-Kp-Ks9"/>
+                            <constraint firstItem="JJV-Q2-z8B" firstAttribute="top" secondItem="SwD-Om-456" secondAttribute="bottom" constant="2" id="pm4-Kp-Ks9"/>
                             <constraint firstItem="QNF-8o-7ca" firstAttribute="trailing" secondItem="dpq-th-n3q" secondAttribute="trailing" id="q1O-BM-wfQ"/>
                             <constraint firstItem="kFm-Jp-iAw" firstAttribute="top" secondItem="zE3-Xf-cz2" secondAttribute="bottom" constant="2" id="qml-jP-aLX"/>
                             <constraint firstItem="zE3-Xf-cz2" firstAttribute="trailing" secondItem="dpq-th-n3q" secondAttribute="trailing" id="uKh-Vo-5jo"/>
@@ -1315,6 +1352,7 @@
                         <outlet property="fAddressEncryptServerTV" destination="DC1-Sq-c3X" id="m3T-Qz-hWE"/>
                         <outlet property="fOptEncryptServerTV" destination="Xj8-Mi-yLf" id="Vog-Pi-Tg9"/>
                         <outlet property="proxySuffixTV" destination="Mcr-oC-3zC" id="fDy-nu-7P4"/>
+                        <outlet property="customDomainTV" destination="SwD-tv-012" id="SwD-outlet-cd"/>
                         <outlet property="versionLabel" destination="CPo-bL-CDQ" id="Uvk-nm-7RV"/>
                     </connections>
                 </viewController>
